@@ -10,6 +10,8 @@ from time import sleep
 from urllib.parse import parse_qs, quote, unquote, urlparse
 from uuid import uuid4
 
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from cloudscraper import create_scraper
 from lk21 import Bypass
