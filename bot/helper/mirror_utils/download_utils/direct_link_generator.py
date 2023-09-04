@@ -769,100 +769,41 @@ def linkbox(url):
     raw = itemInfo['url'].split("/", 3)[-1]
     return f'https://wdl.nuplink.net/{raw}&filename={name}'
 
-def gofile(url):
-    try:
-        if "::" in url:
-            _password = url.split("::")[-1]
-            _password = sha256(_password.encode("utf-8")).hexdigest()
-            url = url.split("::")[-2]
-        else:
-            _password = ''
-        _id = url.split("/")[-1]
-    except Exception as e:
-        raise DirectDownloadLinkException(f"ERROR: {e.__class__.__name__}")
-
-    session = Session()
-
-    def __get_token():
-        if 'gofile_token' in _caches:
-            __url = f"https://api.gofile.io/getAccountDetails?token={_caches['gofile_token']}"
-        else:
-            __url = 'https://api.gofile.io/createAccount'
-        try:
-            __res = session.get(__url, verify=False).json()
-            if __res["status"] != 'ok':
-                if 'gofile_token' in _caches:
-                    del _caches['gofile_token']
-                return __get_token()
-            _caches['gofile_token'] = __res["data"]["token"]
-            return _caches['gofile_token']
-        except Exception as e:
-            raise DirectDownloadLinkException(f"ERROR: {e.__class__.__name__}")
-
-    try:
-        token = __get_token()
-    except Exception as e:
-        session.close()
-        raise DirectDownloadLinkException(e)
-
-    details = {'contents':[], 'title': '', 'total_size': 0}
-    headers = {"Cookie": f"accountToken={token}"}
-    details["header"] = ' '.join(f'{key}: {value}' for key, value in headers.items())
-
-    def __fetch_links(_id, folderPath=''):
-        _url = f"https://api.gofile.io/getContent?contentId={_id}&token={token}&websiteToken=7fd94ds12fds4&cache=true"
-        if _password:
-            _url += f"&password={_password}"
-        try:
-            _json = session.get(_url, verify=False).json()
-        except Exception as e:
-            raise DirectDownloadLinkException(f"ERROR: {e.__class__.__name__}")
-        if _json['status'] in 'error-passwordRequired':
-            raise DirectDownloadLinkException(f'ERROR: This link requires a password!\n\n<b>This link requires a password!</b>\n- Insert sign <b>::</b> after the link and write the password after the sign.\n\n<b>Example:</b> {url}::love you\n\n* No spaces between the signs <b>::</b>\n* For the password, you can use a space!')
-        if _json['status'] in 'error-passwordWrong':
-            raise DirectDownloadLinkException('ERROR: This password is wrong !')
-        if _json['status'] in 'error-notFound':
-            raise DirectDownloadLinkException("ERROR: File not found on gofile's server")
-        if _json['status'] in 'error-notPublic':
-            raise DirectDownloadLinkException("ERROR: This folder is not public")
-
-        data = _json["data"]
-
-        if not details['title']:
-            details['title'] = data['name'] if data['type'] == "folder" else _id
-
-        contents = data["contents"]
-        for content in contents.values():
-            if content["type"] == "folder":
-                if not content['public']:
-                    continue
-                if not folderPath:
-                    newFolderPath = path.join(details['title'], content["name"])
-                else:
-                    newFolderPath = path.join(folderPath, content["name"])
-                __fetch_links(content["id"], newFolderPath)
-            else:
-                if not folderPath:
-                    folderPath = details['title']
-                item = {
-                    "path": path.join(folderPath),
-                    "filename": content["name"],
-                    "url": content["link"],
-                }
-                if 'size' in content:
-                    size = content["size"]
-                    if isinstance(size, str) and size.isdigit():
-                        size = float(size)
-                    details['total_size'] += size
-                details['contents'].append(item)
-
-    try:
-        __fetch_links(_id)
-    except Exception as e:
-        session.close()
-        raise DirectDownloadLinkException(e)
-    session.close()
-    return details
+def gofile(url: str) -> str: 
+    api_uri = 'https://api.gofile.io' 
+    session = Session() 
+    args = {'fileNum': 0, 'password': ''} 
+    try: 
+        if '--' in url: 
+            _link = url.split('--') 
+            url = _link[0] 
+            for lnk in _link[1:]: 
+                if 'pw:' in lnk: 
+                    args['password'] = lnk.strip('pw:') 
+                if 'fn:' in lnk: 
+                    args['fileNum'] = int(lnk.strip('fn:')) 
+        crtAcc = session.get(api_uri+'/createAccount').json() 
+        data = {'contentId': url.split('/')[-1], 
+                'token': crtAcc['data']['token'], 
+                'websiteToken': '12345', 
+                'cache': 'true', 
+                'password': sha256(args['password'].encode('utf-8')).hexdigest()} 
+        getCon = session.get(api_uri+'/getContent', params=data).json() 
+    except Exception as e: 
+        raise DirectDownloadLinkException(f"ERROR: {e}") 
+    fileNum = args.get('fileNum') 
+    if getCon['status'] == 'ok': 
+        rstr = jsondumps(getCon) 
+        link = re_findall(r'"link": "(.*?)"', rstr) 
+        if fileNum > len(link): 
+            fileNum = 0  # Force to first link 
+    elif getCon['status'] == 'error-passwordWrong': 
+        raise DirectDownloadLinkException("ERROR: Password required!\n\n- Use <b>--pw:</b> arg after the link.\n<b>Example:</b> <code>/cmd https://gofile.io/d/xyz--pw:love you</code>") 
+    else: 
+        raise DirectDownloadLinkException("ERROR: Error trying to generate direct link from Gofile.") 
+    dl_url = link[fileNum] if fileNum == 0 else link[fileNum-1] 
+    headers = f"""Host: {urlparse(dl_url).netloc} Cookie: accountToken={data['token']}""" 
+    return dl_url, headers
 
 def route_intercept(route, request):
     if request.resource_type == 'script':
