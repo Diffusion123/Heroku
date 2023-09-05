@@ -937,7 +937,7 @@ def mediafireFolder(url: str):
         raise DirectDownloadLinkException(e)
     details['title'] = folder_infos[0]["name"]
 
-def __scraper(url):
+    def __scraper(url):
         try:
             html = HTML(session.get(url).text)
         except:
@@ -945,7 +945,7 @@ def __scraper(url):
         if final_link := html.xpath("//a[@id='downloadButton']/@href"):
             return final_link[0]
 
-def __get_content(folderKey, folderPath='', content_type='folders'):
+    def __get_content(folderKey, folderPath='', content_type='folders'):
         try:
             params = {
                 'content_type': content_type,
