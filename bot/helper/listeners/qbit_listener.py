@@ -168,7 +168,7 @@ async def __qb_listener():
 async def onDownloadStart(tag):
     async with qb_listener_lock:
         QbTorrents[tag] = {'stalled_time': time(
-        ), 'stop_dup_check': False, 'rechecked': False, 'uploaded': True, 'seeding': False, 'size_checked': False}
+        ), 'stop_dup_check': False, 'rechecked': False, 'seeding': False, 'size_checked': False}
         if not QbInterval:
             periodic = bot_loop.create_task(__qb_listener())
             QbInterval.append(periodic)
