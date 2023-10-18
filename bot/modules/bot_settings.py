@@ -36,7 +36,7 @@ default_values = {'AUTO_DELETE_MESSAGE_DURATION': 30,
                   'DOWNLOAD_DIR': '/usr/src/app/downloads/',
                   'LEECH_SPLIT_SIZE': MAX_SPLIT_SIZE,
                   'RSS_DELAY': 600,
-                  'STATUS_UPDATE_INTERVAL': 10,
+                  'STATUS_UPDATE_INTERVAL': 5,
                   'SEARCH_LIMIT': 0,
                   'UPSTREAM_BRANCH': 'master',
                   'BOT_THEME': 'minimal',
@@ -149,6 +149,14 @@ async def load_config():
     INDEX_URL = environ.get('INDEX_URL', '').rstrip("/")
     if len(INDEX_URL) == 0:
         INDEX_URL = ''
+
+    HEROKU_APP_NAME = environ.get('HEROKU_APP_NAME', '')
+    if len(HEROKU_APP_NAME) == 0:
+        HEROKU_APP_NAME = ''
+      
+    HEROKU_API_KEY = environ.get('HEROKU_API_KEY', '')
+    if len(HEROKU_API_KEY) == 0:
+        HEROKU_API_KEY = ''
 
     SEARCH_API_LINK = environ.get('SEARCH_API_LINK', '').rstrip("/")
     if len(SEARCH_API_LINK) == 0:
@@ -616,6 +624,8 @@ async def load_config():
                         'EQUAL_SPLITS': EQUAL_SPLITS,
                         'EXTENSION_FILTER': EXTENSION_FILTER,
                         'GDRIVE_ID': GDRIVE_ID,
+                        'HEROKU_API_KEY': HEROKU_API_KEY,
+                        'HEROKU_APP_NAME': HEROKU_APP_NAME,
                         'INCOMPLETE_TASK_NOTIFIER': INCOMPLETE_TASK_NOTIFIER,
                         'INDEX_URL': INDEX_URL,
                         'IS_TEAM_DRIVE': IS_TEAM_DRIVE,
