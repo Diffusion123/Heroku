@@ -45,4 +45,4 @@ async def dynos(_, message):
                     async with session.delete(restart_url) as response:
                         return await editMessage(details, "Dynos Restarted Successfully to 0 hours")
 
-bot.add_handler(MessageHandler(dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.authorized & ~CustomFilters.blacklisted))
+bot.add_handler(MessageHandler(dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
