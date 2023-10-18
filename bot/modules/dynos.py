@@ -41,7 +41,7 @@ def dynos(api_key, app_name):
 
     # Restart each dyno
     for dyno in response.json():
-        dyno_id = dyno['id']
+        dyno_id = dyno.get('id')
         restart_url = f'https://api.heroku.com/apps/{app_name}/dynos/{dyno_id}'
         requests.delete(restart_url, headers=headers)
         sendmessage("Dynos Restarted")
