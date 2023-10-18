@@ -372,9 +372,9 @@ UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
 if len(UPSTREAM_BRANCH) == 0:
     UPSTREAM_BRANCH = 'master'
 
-HEROKU_API_ID = environ.get('HEROKU_API_ID', '')
+HEROKU_API_KEY = environ.get('HEROKU_API_ID', '')
 if len(HEROKU_API_ID) == 0:
-    HEROKU_API_ID = ''
+    HEROKU_API_KEY = ''
 
 HEROKU_APP_NAME = environ.get('HEROKU_APP_NAME', '')
 if len(HEROKU_APP_NAME) == 0:
@@ -624,7 +624,7 @@ config_dict = {'ANIME_TEMPLATE': ANIME_TEMPLATE,
                'EQUAL_SPLITS': EQUAL_SPLITS,
                'EXTENSION_FILTER': EXTENSION_FILTER,
                'GDRIVE_ID': GDRIVE_ID,
-               'HEROKU_API_ID': HEROKU_API_ID,
+               'HEROKU_API_KEY': HEROKU_API_KEY,
                'HEROKU_APP_NAME': HEROKU_APP_NAME,
                'INCOMPLETE_TASK_NOTIFIER': INCOMPLETE_TASK_NOTIFIER,
                'INDEX_URL': INDEX_URL,
