@@ -373,7 +373,7 @@ if len(UPSTREAM_BRANCH) == 0:
     UPSTREAM_BRANCH = 'master'
 
 HEROKU_API_KEY = environ.get('HEROKU_API_ID', '')
-if len(HEROKU_API_ID) == 0:
+if len(HEROKU_API_KEY) == 0:
     HEROKU_API_KEY = ''
 
 HEROKU_APP_NAME = environ.get('HEROKU_APP_NAME', '')
