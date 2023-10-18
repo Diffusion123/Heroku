@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import aiohttp
 import asyncio
 from subprocess import run as srun, check_output
