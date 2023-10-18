@@ -22,27 +22,25 @@ from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 
-async def dynos(_, message):
-    url = f'https://api.heroku.com/apps/{config_dict["HEROKU_APP_NAME"]}/dynos'
+def restart_heroku_dynos(api_key, app_name):
+    # Form the URL for restarting dynos
+    url = f'https://api.heroku.com/apps/{app_name}/dynos'
 
+    # Headers with authorization and content type
     headers = {
         'Accept': 'application/vnd.heroku+json; version=3',
-        'Authorization': f'Bearer {config_dict["HEROKU_API_KEY"]}',
+        'Authorization': f'Bearer {api_key}',
         'Content-Type': 'application/json',
     }
 
-    details = await sendMessage(message, '<i>Fetching Heroku Credentials ...</i>')
+    # Get a list of dynos
+    response = requests.get(url, headers=headers)
 
-    async with aiohttp.ClientSession(headers=headers) as session:
-        async with session.get(url) as response:
-            dynos = await response.json()
-
-            for dyno in dynos:
-                dyno_id = dyno['id']
-                restart_url = f'https://api.heroku.com/apps/{config_dict["HEROKU_APP_NAME"]}/dynos/{dyno_id}'
-
-                async with aiohttp.ClientSession(headers={'Authorization': f'Bearer {config_dict["HEROKU_API_KEY"]}'}) as session:
-                    async with session.delete(restart_url) as response:
-                        return await editMessage(details, "Dynos Restarted Successfully to 0 hours")
-
+    # Restart each dyno
+    for dyno in response.json():
+        dyno_id = dyno['id']
+        restart_url = f'https://api.heroku.com/apps/{app_name}/dynos/{dyno_id}'
+        requests.delete(restart_url, headers=headers)
+        sendmessage("Dynos Restarted")
+        
 bot.add_handler(MessageHandler(dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
