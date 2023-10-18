@@ -20,8 +20,8 @@ from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 
-HEROKU_API_KEY := config_dict['HEROKU_API_KEY']:
-HEROKU_APP_NAME := config_dict['HEROKU_APP_NAME']:
+HEROKU_API_KEY = config_dict['HEROKU_API_KEY']
+HEROKU_APP_NAME = config_dict['HEROKU_APP_NAME']
 
 async def dynos(client, message):
     url = f'https://api.heroku.com/apps/{HEROKU_APP_NAME}/dynos'
