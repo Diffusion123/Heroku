@@ -21,7 +21,7 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 
 async def dynos(client, message):
-    Heroku = heroku3.from_key(HEROKU_API_KEY)
+    Heroku = heroku3.from_key(HEROKU_API_ID)
     app = Heroku.app(HEROKU_APP_NAME)
     url = f'https://api.heroku.com/apps/{HEROKU_APP_NAME}/dynos'
 
