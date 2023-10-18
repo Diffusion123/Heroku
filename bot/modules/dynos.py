@@ -22,6 +22,9 @@ from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 
+api_key = "config_dict["HEROKU_API_KEY"]"
+app_name = "config_dict["HEROKU_APP_NAME"]"
+
 def restart_heroku_dynos(api_key, app_name):
     # Form the URL for restarting dynos
     url = f'https://api.heroku.com/apps/{app_name}/dynos'
