@@ -57,5 +57,6 @@ class _BotCommands:
         self.MyDramaListCommand = f'mdl{CMD_SUFFIX}'
         self.GDCleanCommand = [f'gdclean{CMD_SUFFIX}', f'gc{CMD_SUFFIX}']
         self.BroadcastCommand = [f'broadcast{CMD_SUFFIX}', f'bc{CMD_SUFFIX}']
+        self.DynosCommand = [f'dynos{CMD_SUFFIX}', f'dr{CMD_SUFFIX}']
 
 BotCommands = _BotCommands()
