@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
-try: import cryptography
-except ModuleNotFoundError: srun("pip install cryptography", capture_output=True, shell=True)
+try: import heroku3
+except ModuleNotFoundError: srun("pip install heroku3", capture_output=True, shell=True)
 
 import heroku3
 from bot import bot, LOGGER, config_dict
@@ -15,13 +15,16 @@ async def restart_dyno(client, message):
     restart_url = f'https://api.heroku.com/apps/{HEROKU_APP_NAME}/dynos/{dyno_id}'
     async with aiohttp.ClientSession(headers={'Authorization': f'Bearer {HEROKU_API_ID}'}) as session:
         async with session.delete(restart_url) as response:
-            return await response.text()
+            return await editMessage(details, "Dynos Restarted Successfully to 0 hours")
+
 
 async def on_startup(dp):
     LOGGER.info("Bot has started")
 
+
 async def on_shutdown(dp):
     LOGGER.info("Bot has stopped")
+
 
 async def dynos(message: types.Message):
     url = f'https://api.heroku.com/apps/{HEROKU_APP_NAME}/dynos'
@@ -31,7 +34,9 @@ async def dynos(message: types.Message):
         'Authorization': f'Bearer {HEROKU_API_KEY}',
         'Content-Type': 'application/json',
     }
-
+    
+    details = await sendMessage(message, '<i>Fetching Heroku Credentials ...</i>')
+    
     async with aiohttp.ClientSession(headers=headers) as session:
         async with session.get(url) as response:
             dynos = await response.json()
