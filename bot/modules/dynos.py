@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+import subprocess import run as srun, check_output
 try: import heroku3
 except ModuleNotFoundError: srun("pip install heroku3", capture_output=True, shell=True)
 import heroku3
