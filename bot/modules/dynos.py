@@ -6,6 +6,8 @@ except ModuleNotFoundError: srun("pip install heroku3", capture_output=True, she
 import heroku3
 
 from bot import bot, LOGGER, config_dict
+from pyrogram.filters import command
+from pyrogram.handlers import MessageHandler
 from .helper.telegram_helper.bot_commands import BotCommands
 from .helper.telegram_helper.message_utils import sendMessage, editMessage, editReplyMarkup, sendFile, deleteMessage, delete_all_messages
 from .helper.telegram_helper.filters import CustomFilters
