@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import requests
 import aiohttp
 import asyncio
 from subprocess import run as srun, check_output
@@ -15,7 +15,7 @@ from os import path as ospath, getcwd
 from pyrogram.handlers import MessageHandler 
 from pyrogram.filters import command
 
-from bot import bot, config_dict, DATABASE_URL
+from bot import bot, config_dict, dispatcher, DATABASE_URL
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
