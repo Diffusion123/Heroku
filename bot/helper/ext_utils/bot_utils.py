@@ -733,6 +733,10 @@ async def set_commands(client):
                 'Search Animes on AniList.com and fetch details',
             ),
             BotCommand(
+                BotCommands.DynosCommand,
+                'Kill Time Of Bot And Fetch Details',
+            ),
+            BotCommand(
                 BotCommands.MyDramaListCommand,
                 'Search Dramas on MyDramaList.com and fetch details',
             ),
