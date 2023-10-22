@@ -655,35 +655,48 @@ def extra_btns(buttons):
 
 
 async def set_commands(client):
-    if config_dict['SET_COMMANDS']:
-        try:
-            bot_cmds = [
-            BotCommand(BotCommands.MirrorCommand[0], f'or /{BotCommands.MirrorCommand[1]} Mirror [links/media/rclone_path]'),
-            BotCommand(BotCommands.LeechCommand[0], f'or /{BotCommands.LeechCommand[1]} Leech [links/media/rclone_path]'),
-            BotCommand(BotCommands.QbMirrorCommand[0], f'or /{BotCommands.QbMirrorCommand[1]} Mirror magnet/torrent using qBittorrent'),
-            BotCommand(BotCommands.QbLeechCommand[0], f'or /{BotCommands.QbLeechCommand[1]} Leech magnet/torrent using qBittorrent'),
-            BotCommand(BotCommands.YtdlCommand[0], f'or /{BotCommands.YtdlCommand[1]} Mirror yt-dlp supported links via bot'),
-            BotCommand(BotCommands.YtdlLeechCommand[0], f'or /{BotCommands.YtdlLeechCommand[1]} Leech yt-dlp supported links via bot'),
-            BotCommand(BotCommands.CloneCommand[0], f'or /{BotCommands.CloneCommand[1]} Copy file/folder to Drive (GDrive/RClone)'),
-            BotCommand(BotCommands.CountCommand, '[drive_url]: Count file/folder of Google Drive/RClone Drives'),
-            BotCommand(BotCommands.StatusCommand[0], f'or /{BotCommands.StatusCommand[1]} Get Bot All Status Stats Message'),
-            BotCommand(BotCommands.StatsCommand[0], f'or /{BotCommands.StatsCommand[1]} Check Bot & System stats'),
-            BotCommand(BotCommands.BtSelectCommand, 'Select files to download only torrents/magnet qbit/aria2c'),
-            BotCommand(BotCommands.CategorySelect, 'Select Upload Category with UserTD or Bot Categories to upload only GDrive upload'),
-            BotCommand(BotCommands.CancelMirror, 'Cancel a Task of yours!'),
-            BotCommand(BotCommands.CancelAllCommand[0], f'Cancel all Tasks in whole Bots.'),
-            BotCommand(BotCommands.ListCommand, 'Search in Drive(s)'),
-            BotCommand(BotCommands.SearchCommand, 'Search in Torrent via qBit clients!'),
-            BotCommand(BotCommands.HelpCommand, 'Get detailed help about the WZML-X Bot'),
-            BotCommand(BotCommands.UserSetCommand[0], f"or /{BotCommands.UserSetCommand[1]} User's Personal Settings (Open in PM)"),
-            BotCommand(BotCommands.IMDBCommand, 'Search Movies/Series on IMDB.com and fetch details'),
-            BotCommand(BotCommands.AniListCommand, 'Search Animes on AniList.com and fetch details'),
-            BotCommand(BotCommands.MyDramaListCommand, 'Search Dramas on MyDramaList.com and fetch details'),
-            BotCommand(BotCommands.SpeedCommand[0], f'or /{BotCommands.SpeedCommand[1]} Check Server Up & Down Speed & Details'),
-            BotCommand(BotCommands.MediaInfoCommand[0], f'or /{BotCommands.MediaInfoCommand[1]} Generate Mediainfo for Replied Media or DL links'),
-            BotCommand(BotCommands.BotSetCommand[0], f"or /{BotCommands.BotSetCommand[1]} Bot's Personal Settings (Owner or Sudo Only)"),
-            BotCommand(BotCommands.DynosCommand, 'Kill Time & Update the Bot (Owner or Sudo Only)'),
-            ]
+    i            BotCommand(BotCommands.ListCommand, 'Search in Drive(s)'),
+            BotCommand(
+                BotCommands.SearchCommand,
+                'Search in Torrent via qBit clients!',
+            ),
+            BotCommand(
+                BotCommands.HelpCommand,
+                'Get detailed help about the WZML-X Bot',
+            ),
+            BotCommand(
+                BotCommands.UserSetCommand[0],
+                f"or /{BotCommands.UserSetCommand[1]} User's Personal Settings (Open in PM)",
+            ),
+            BotCommand(
+                BotCommands.IMDBCommand,
+                'Search Movies/Series on IMDB.com and fetch details',
+            ),
+            BotCommand(
+                BotCommands.AniListCommand,
+                'Search Animes on AniList.com and fetch details',
+            ),
+            BotCommand(
+                BotCommands.MyDramaListCommand,
+                'Search Dramas on MyDramaList.com and fetch details',
+            ),
+            BotCommand(
+                BotCommands.SpeedCommand[0],
+                f'or /{BotCommands.SpeedCommand[1]} Check Server Up & Down Speed & Details',
+            ),
+            BotCommand(
+                BotCommands.MediaInfoCommand[0],
+                f'or /{BotCommands.MediaInfoCommand[1]} Generate Mediainfo for Replied Media or DL links',
+            ),
+            BotCommand(
+                BotCommands.BotSetCommand[0],
+                f"or /{BotCommands.BotSetCommand[1]} Bot's Personal Settings (Owner or Sudo Only)",
+            ),
+            BotCommand(
+                BotCommands.RestartCommand[0],
+                f'or /{BotCommands.RestartCommand[1]} Restart & Update the Bot (Owner or Sudo Only)',
+            ),
+        ]
             if config_dict['SHOW_EXTRA_CMDS']:
                 bot_cmds.insert(1, BotCommand(BotCommands.MirrorCommand[2], f'or /{BotCommands.MirrorCommand[3]} Mirror and UnZip [links/media/rclone_path]'))
                 bot_cmds.insert(1, BotCommand(BotCommands.MirrorCommand[4], f'or /{BotCommands.MirrorCommand[5]} Mirror and Zip [links/media/rclone_path]'))
