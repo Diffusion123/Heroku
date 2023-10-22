@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 import requests
+from time import time
+from uuid import uuid4
+from asyncio import sleep
 from subprocess import run as srun
 
 try:
@@ -17,7 +20,7 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 
 def restart_dynos(_, message):
-    reply = sendMessage(message, "Restarting Dynos...")
+    reply = await sendMessage(message, "Restarting Dynos...")
     api_key = config_dict["HEROKU_API_KEY"]
     app_name = config_dict["HEROKU_APP_NAME"]
 
@@ -38,6 +41,6 @@ def restart_dynos(_, message):
         dyno_id = dyno['id']
         restart_url = f'https://api.heroku.com/apps/{app_name}/dynos/{dyno_id}'
         requests.delete(restart_url, headers=headers)
-    editMessage(reply, "Dynos Restarted!",)
+    await editMessage(reply, "Dynos Restarted!",)
         
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
