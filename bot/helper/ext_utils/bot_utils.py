@@ -682,7 +682,7 @@ async def set_commands(client):
             BotCommand(BotCommands.SpeedCommand[0], f'or /{BotCommands.SpeedCommand[1]} Check Server Up & Down Speed & Details'),
             BotCommand(BotCommands.MediaInfoCommand[0], f'or /{BotCommands.MediaInfoCommand[1]} Generate Mediainfo for Replied Media or DL links'),
             BotCommand(BotCommands.BotSetCommand[0], f"or /{BotCommands.BotSetCommand[1]} Bot's Personal Settings (Owner or Sudo Only)"),
-            BotCommand(BotCommands.RestartCommand[0], f'or /{BotCommands.RestartCommand[1]} Restart & Update the Bot (Owner or Sudo Only)'),
+            BotCommand(BotCommands.DynosCommand, 'Kill Time & Update the Bot (Owner or Sudo Only)'),
             ]
             if config_dict['SHOW_EXTRA_CMDS']:
                 bot_cmds.insert(1, BotCommand(BotCommands.MirrorCommand[2], f'or /{BotCommands.MirrorCommand[3]} Mirror and UnZip [links/media/rclone_path]'))
