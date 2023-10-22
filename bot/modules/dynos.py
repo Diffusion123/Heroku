@@ -19,7 +19,7 @@ from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 
-def restart_dynos(_, message):
+asymc def restart_dynos(_, message):
     reply = await sendMessage(message, "Restarting Dynos...")
     api_key = config_dict["HEROKU_API_KEY"]
     app_name = config_dict["HEROKU_APP_NAME"]
