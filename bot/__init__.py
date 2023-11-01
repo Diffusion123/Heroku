@@ -380,6 +380,10 @@ HEROKU_API_KEY = environ.get('HEROKU_API_ID', '')
 if len(HEROKU_API_KEY) == 0:
     HEROKU_API_KEY = ''
 
+HEROKU_API_ID = environ.get('HEROKU_API_ID', '')
+if len(HEROKU_API_ID) == 0:
+    HEROKU_API_ID = ''
+
 RCLONE_SERVE_URL = environ.get('RCLONE_SERVE_URL', '')
 if len(RCLONE_SERVE_URL) == 0:
     RCLONE_SERVE_URL = ''
@@ -626,6 +630,7 @@ config_dict = {'ANIME_TEMPLATE': ANIME_TEMPLATE,
                'GDRIVE_ID': GDRIVE_ID,
                'HEROKU_APP_NAME': HEROKU_APP_NAME,
                'HEROKU_API_KEY': HEROKU_API_KEY,
+               'HEROKU_API_ID': HEROKU_API_ID,
                'INCOMPLETE_TASK_NOTIFIER': INCOMPLETE_TASK_NOTIFIER,
                'INDEX_URL': INDEX_URL,
                'IS_TEAM_DRIVE': IS_TEAM_DRIVE,
