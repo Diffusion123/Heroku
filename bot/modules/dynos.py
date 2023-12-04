@@ -69,10 +69,11 @@ async def index(_, message):  # Added 'message' parameter
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [humanize.naturalsize(urllib.parse.quote(file["size"])) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result += '\n'.join(["\nName: " + urllib.parse.unquote(file["name"]) + " [" + s + "]" + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
-        await editMessage(reply, result)
         if len(result) > 4000
-            sendmessage(reply, result)
+            await editMessage(reply, result)
             result = ""
+    if result != ""
+        await editMessage(reply, result)
     
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(index, filters=command(BotCommands.IndexCommand) & CustomFilters.sudo))
