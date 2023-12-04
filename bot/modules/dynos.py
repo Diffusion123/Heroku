@@ -14,11 +14,7 @@ try:
     import heroku3
 except ModuleNotFoundError:
     srun("pip install heroku3", capture_output=True, shell=True)
-try:
-    import humanize
-except ModuleNotFoundError:
-    srun("pip install humanize", capture_output=True, shell=True)
-import humanize
+
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
 
@@ -57,6 +53,16 @@ async def func(link, payload, auth_header):
     decoded_data = base64.b64decode(encrypted_response.text[::-1][24:-20]).decode("utf-8")
     return json.loads(decoded_data)
 
+def get_readable_file_size(file_size):
+    if file_size < 1024:
+        return f"{file_size} Bytes"
+    elif 1024 <= file_size < 1024**2:
+        return f"{file_size / 1024:.2f} KB"
+    elif 1024**2 <= file_size < 1024**3:
+        return f"{file_size / (1024**2):.2f} MB"
+    elif 1024**3 <= file_size < 1024**4:
+        return f"{file_size / (1024**3):.2f} GB"
+
 async def index(_, message):  # Added 'message' parameter
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
@@ -66,7 +72,7 @@ async def index(_, message):  # Added 'message' parameter
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
     decrypted_response = await func(link, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
-        size = [humanize.naturalsize(urllib.parse.quote(file["size"])) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
+        size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result = '\n'.join(["\nName: " + urllib.parse.unquote(file["name"]) + "[" + s + "]" + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
         await editMessage(reply, result)
 
