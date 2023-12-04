@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 import requests
+import humanize
+import urllib.parse
+import json
+import base64
 from time import time
 from uuid import uuid4
 from asyncio import sleep
@@ -42,5 +46,23 @@ async def restart_dynos(_, message):
         restart_url = f'https://api.heroku.com/apps/{app_name}/dynos/{dyno_id}'
         requests.delete(restart_url, headers=headers)
     await editMessage(reply, "Dynos Restarted!",)
-        
+
+async def func(link, payload, auth_header):
+    headers = {"Authorization": auth_header, "Referer": link}
+    encrypted_response = requests.post(link, data=payload, headers=headers)
+    decoded_data = base64.b64decode(encrypted_response.text[::-1][24:-20]).decode("utf-8")
+    return json.loads(decoded_data)
+
+async def index(message, link):
+    reply = await sendMessage(message, "Extracting Index...")    
+    auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
+    link = link.rstrip('/') + '/'
+    payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
+    decrypted_response = func(link, payload, auth_header)
+    if "data" in decrypted_response and "files" in decrypted_response["data"]:
+        size = [humanize.naturalsize(urllib.parse.quote(file["size"])) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
+        result = '\n'.join(["\nName:" + urllib.parse.quote(file["name"]) + "  " + s + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
+        await editMessage(reply, result)
+
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
+bot.add_handler(MessageHandler(index, filters=command(BotCommands.IndexCommand) & CustomFilters.sudo))
