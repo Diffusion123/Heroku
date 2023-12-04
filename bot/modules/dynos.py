@@ -20,7 +20,7 @@ from bot import bot, config_dict, DATABASE_URL
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
-from bot.helper.ext_utils.bot_utils import get_readable_file_size
+
 async def restart_dynos(_, message):
     reply = await sendMessage(message, "Restarting Dynos...")
     api_key = config_dict["HEROKU_API_KEY"]
@@ -51,19 +51,34 @@ async def func(link, payload, auth_header):
     decoded_data = base64.b64decode(encrypted_response.text[::-1][24:-20]).decode("utf-8")
     return json.loads(decoded_data)
 
+def get_readable_file_size(file_size):
+    if file_size < 1024:
+        return f"{file_size} B"
+    elif 1024 <= file_size < 1024**2:
+        return f"{file_size / 1024:.2f} KB"
+    elif 1024**2 <= file_size < 1024**3:
+        return f"{file_size / (1024**2):.2f} MB"
+    elif file_size >= 1024**3:
+        return f"{file_size / (1024**3):.2f} GB"
+
 async def index(_, message):  # Added 'message' parameter
     result = ""
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
     reply = await sendMessage(message, "Extracting Index...")    
-    link = f"{link}/" if link[-1] != '/' else link
+    link = link + '/' if link and link[-1] != '/' else link
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
     decrypted_response = await func(link, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
-        result += '\n'.join(["\nName: " + urllib.parse.unquote(file["name"]) + " [" + size_str + "]" + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, size_str in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
+        result += '\n'.join([
+            f"\nName: {urllib.parse.unquote(file['name'])} [{size_str}]"
+            f"\nhttps://drive.google.com/file/d/{urllib.parse.quote(file['id'])}"
+            for file, size_str in zip(decrypted_response["data"]["files"], size)
+            if file["mimeType"] != "application/vnd.google-apps.folder"
+        ])
         await editMessage(reply, result)
-            
+
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(index, filters=command(BotCommands.IndexCommand) & CustomFilters.sudo))
