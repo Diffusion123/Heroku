@@ -2,6 +2,7 @@
 import requests
 import urllib.parse
 import json
+from re import search as re_search
 import base64
 from time import time
 from uuid import uuid4
@@ -56,10 +57,9 @@ async def func(link, payload, auth_header):
     decoded_data = base64.b64decode(encrypted_response.text[::-1][24:-20]).decode("utf-8")
     return json.loads(decoded_data)
 
-async def index(message, link):
+async def index(link):
     reply = await sendMessage(message, "Extracting Index...")    
-    auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
-    link = link.rstrip('/') + '/'
+    auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
     decrypted_response = func(link, payload, auth_header)
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
