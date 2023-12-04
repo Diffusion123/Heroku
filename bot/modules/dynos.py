@@ -63,12 +63,8 @@ async def index(_, message):  # Added 'message' parameter
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [format_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result += '\n'.join(["\nName: " + urllib.parse.unquote(file["name"]) + " [" + size_str + "]" + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, size_str in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
-        if len(result) < 4000:
-            await sendMessage(reply, result)
-            result = ""
-    if result != "":
-        await sendMessage(reply, result)
-
+        await editMessage(reply, result)
+            
 def format_size(size_in_bytes):
     for unit in ['B', 'KB', 'MB', 'GB']:
         if size_in_bytes < 1024.0:
