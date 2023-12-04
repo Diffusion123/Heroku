@@ -7,10 +7,9 @@ import base64
 from time import time
 from uuid import uuid4
 from asyncio import sleep
-from re import search as re_search
 from subprocess import run as srun
+from re import search as re_search
 from urllib.parse import unquote
-
 try:
     import heroku3
 except ModuleNotFoundError:
@@ -68,7 +67,7 @@ async def index(_, message):  # Added 'message' parameter
     decrypted_response = await func(link, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [humanize.naturalsize(urllib.parse.quote(file["size"])) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
-        result = '\n'.join(["\nName:" + urllib.parse.unquote(file["name"]) + "  " + s + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
+        result = '\n'.join(["\nName: " + urllib.parse.unquote(file["name"]) + "[" + s + "]" + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
         await editMessage(reply, result)
 
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
