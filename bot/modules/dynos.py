@@ -67,9 +67,9 @@ async def index(_, message):  # Added 'message' parameter
             
 def format_size(size_in_bytes):
     for unit in ['B', 'KB', 'MB', 'GB']:
-        if size_in_bytes < 1024.0:
+        if size_in_bytes < 1024:
             return f"{size_in_bytes:.2f} {unit}"
-        size_in_bytes /= 1024.0
+        size_in_bytes /= 1024
 
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(index, filters=command(BotCommands.IndexCommand) & CustomFilters.sudo))
