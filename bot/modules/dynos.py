@@ -59,7 +59,7 @@ async def func(link, payload, auth_header):
 
 async def index(link):
     reply = await sendMessage(message, "Extracting Index...")    
-    auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}
+    auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
     decrypted_response = func(link, payload, auth_header)
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
