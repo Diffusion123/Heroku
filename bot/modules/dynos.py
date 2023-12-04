@@ -3,16 +3,23 @@ import requests
 import urllib.parse
 import json
 import base64
+
 from time import time
 from uuid import uuid4
 from asyncio import sleep
+from re import search as re_search
 from subprocess import run as srun
 from urllib.parse import unquote
-from re import search as re_search
+
 try:
     import heroku3
 except ModuleNotFoundError:
     srun("pip install heroku3", capture_output=True, shell=True)
+try:
+    import humanize
+except ModuleNotFoundError:
+    srun("pip install humanize", capture_output=True, shell=True)
+import humanize
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
 
@@ -45,39 +52,21 @@ async def restart_dynos(_, message):
         requests.delete(restart_url, headers=headers)
     await editMessage(reply, "Dynos Restarted!")
 
-async def func(link, payload, auth_header):
-    headers = {"Authorization": auth_header, "Referer": link}
-    encrypted_response = requests.post(link, data=payload, headers=headers)  # Corrected variable name
+async def func(url, payload, auth_header):
+    headers = {"Authorization": auth_header, "Referer": url}
+    encrypted_response = requests.post(url, data=payload, headers=headers)  # Corrected variable name
     decoded_data = base64.b64decode(encrypted_response.text[::-1][24:-20]).decode("utf-8")
     return json.loads(decoded_data)
 
-def get_readable_file_size(file_size):
-    if file_size < 1024:
-        return f"{file_size} B"
-    elif 1024 <= file_size < 1024**2:
-        return f"{file_size / 1024:.2f} KB"
-    elif 1024**2 <= file_size < 1024**3:
-        return f"{file_size / (1024**2):.2f} MB"
-    elif file_size >= 1024**3:
-        return f"{file_size / (1024**3):.2f} GB"
-
 async def index(_, message):  # Added 'message' parameter
-    result = ""
-    args = message.text.split()
-    link = args[1] if len(args) > 1 else ''
     reply = await sendMessage(message, "Extracting Index...")    
-    link = link + '/' if link and link[-1] != '/' else link
+    url = f"{url}/" if url[-1] != '/' else url
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
-    decrypted_response = await func(link, payload, auth_header)  # Corrected function call
+    decrypted_response = await func(url, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
-        size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
-        result += '\n'.join([
-            f"\nName: {urllib.parse.unquote(file['name'])} [{size_str}]"
-            f"\nhttps://drive.google.com/file/d/{urllib.parse.quote(file['id'])}"
-            for file, size_str in zip(decrypted_response["data"]["files"], size)
-            if file["mimeType"] != "application/vnd.google-apps.folder"
-        ])
+        size = [humanize.naturalsize(urllib.parse.quote(file["size"])) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
+        result = '\n'.join(["\nName:" + urllib.parse.unquote(file["name"]) + "  " + s + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
         await editMessage(reply, result)
 
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
