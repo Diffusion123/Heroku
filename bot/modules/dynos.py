@@ -13,12 +13,6 @@ try:
     import heroku3
 except ModuleNotFoundError:
     srun("pip install heroku3", capture_output=True, shell=True)
-try:
-    import humanize
-except ModuleNotFoundError:
-    srun("pip install humanize", capture_output=True, shell=True)
-import humanize
-
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
 
@@ -67,13 +61,19 @@ async def index(_, message):  # Added 'message' parameter
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
     decrypted_response = await func(link, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
-        size = [humanize.naturalsize(urllib.parse.quote(file["size"])) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
-        result += '\n'.join(["\nName: " + urllib.parse.unquote(file["name"]) + " [" + s + "]" + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
-        if len(result) > 4000:
+        size = [format_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
+        result += '\n'.join(["\nName: " + urllib.parse.unquote(file["name"]) + " [" + size_str + "]" + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, size_str in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
+        if len(result) < 4000:
             await sendMessage(reply, result)
             result = ""
     if result != "":
         await sendMessage(reply, result)
-    
+
+def format_size(size_in_bytes):
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if size_in_bytes < 1024.0:
+            return f"{size_in_bytes:.2f} {unit}"
+        size_in_bytes /= 1024.0
+
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(index, filters=command(BotCommands.IndexCommand) & CustomFilters.sudo))
