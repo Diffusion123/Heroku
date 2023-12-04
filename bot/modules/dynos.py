@@ -52,7 +52,7 @@ async def restart_dynos(_, message):
 
 async def func(link, payload, auth_header):
     headers = {"Authorization": auth_header, "Referer": link}
-    encrypted_response = requests.post(url, data=payload, headers=headers)  # Corrected variable name
+    encrypted_response = requests.post(link, data=payload, headers=headers)  # Corrected variable name
     decoded_data = base64.b64decode(encrypted_response.text[::-1][24:-20]).decode("utf-8")
     return json.loads(decoded_data)
 
