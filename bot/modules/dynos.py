@@ -18,7 +18,6 @@ try:
 except ModuleNotFoundError:
     srun("pip install humanize", capture_output=True, shell=True)
 import humanize
-import heroku3
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
 
@@ -49,20 +48,20 @@ async def restart_dynos(_, message):
         dyno_id = dyno['id']
         restart_url = f'https://api.heroku.com/apps/{app_name}/dynos/{dyno_id}'
         requests.delete(restart_url, headers=headers)
-    await editMessage(reply, "Dynos Restarted!",)
+    await editMessage(reply, "Dynos Restarted!")
 
 async def func(url, payload, auth_header):
     headers = {"Authorization": auth_header, "Referer": url}
-    encrypted_response = requests.post(link, data=payload, headers=headers)
+    encrypted_response = requests.post(url, data=payload, headers=headers)  # Corrected variable name
     decoded_data = base64.b64decode(encrypted_response.text[::-1][24:-20]).decode("utf-8")
     return json.loads(decoded_data)
 
-async def index(url):
+async def index(_, message):  # Added 'message' parameter
     reply = await sendMessage(message, "Extracting Index...")    
     url = f"{url}/" if url[-1] != '/' else url
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
-    decrypted_response = func(url, payload, auth_header)
+    decrypted_response = await func(url, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [humanize.naturalsize(urllib.parse.quote(file["size"])) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result = '\n'.join(["\nName:" + urllib.parse.quote(file["name"]) + "  " + s + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
