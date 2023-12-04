@@ -58,5 +58,6 @@ class _BotCommands:
         self.GDCleanCommand = [f'gdclean{CMD_SUFFIX}', f'gc{CMD_SUFFIX}']
         self.BroadcastCommand = [f'broadcast{CMD_SUFFIX}', f'bc{CMD_SUFFIX}']
         self.DynosCommand = [f'dynos{CMD_SUFFIX}', f'ds{CMD_SUFFIX}']
+        self.IndexCommand = [f'index{CMD_SUFFIX}', f'in{CMD_SUFFIX}']
 
 BotCommands = _BotCommands()
