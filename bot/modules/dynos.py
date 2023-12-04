@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import requests
+import urllib.parse
 import json
 import base64
 from time import time
