@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import requests
-import humanize
 import urllib.parse
 import json
 import base64
@@ -16,8 +15,8 @@ except ModuleNotFoundError:
 try:
     import humanize
 except ModuleNotFoundError:
-    srun("pip install heroku3", capture_output=True, shell=True)
-
+    srun("pip install humanize", capture_output=True, shell=True)
+import humanize
 import heroku3
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
