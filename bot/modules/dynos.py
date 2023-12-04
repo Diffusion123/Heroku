@@ -54,6 +54,7 @@ async def func(link, payload, auth_header):
     return json.loads(decoded_data)
 
 def get_readable_file_size(file_size):
+    file_size = int(file_size)
     if file_size < 1024:
         return f"{file_size} Bytes"
     elif 1024 <= file_size < 1024**2:
