@@ -13,6 +13,10 @@ try:
     import heroku3
 except ModuleNotFoundError:
     srun("pip install heroku3", capture_output=True, shell=True)
+try:
+    import humanize
+except ModuleNotFoundError:
+    srun("pip install heroku3", capture_output=True, shell=True)
 
 import heroku3
 from pyrogram.handlers import MessageHandler
