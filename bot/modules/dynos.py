@@ -20,7 +20,7 @@ from bot import bot, config_dict, DATABASE_URL
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
-
+from bot.helper.ext_utils.bot_utils import get_readable_file_size
 async def restart_dynos(_, message):
     reply = await sendMessage(message, "Restarting Dynos...")
     api_key = config_dict["HEROKU_API_KEY"]
@@ -61,15 +61,9 @@ async def index(_, message):  # Added 'message' parameter
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
     decrypted_response = await func(link, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
-        size = [format_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
+        size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result += '\n'.join(["\nName: " + urllib.parse.unquote(file["name"]) + " [" + size_str + "]" + "\nhttps://drive.google.com/file/d/" + urllib.parse.quote(file["id"]) for file, size_str in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
         await editMessage(reply, result)
             
-def format_size(size_in_bytes):
-    for unit in ['B', 'KB', 'MB', 'GB']:
-        if size_in_bytes < 1024:
-            return f"{size_in_bytes:.2f} {unit}"
-        size_in_bytes /= 1024
-
 bot.add_handler(MessageHandler(restart_dynos, filters=command(BotCommands.DynosCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(index, filters=command(BotCommands.IndexCommand) & CustomFilters.sudo))
