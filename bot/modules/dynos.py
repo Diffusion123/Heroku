@@ -57,8 +57,10 @@ async def func(url, payload, auth_header):
     return json.loads(decoded_data)
 
 async def index(_, message):  # Added 'message' parameter
+    args = message.text.split()
+    link = args[1] if len(args) > 1 else ''
     reply = await sendMessage(message, "Extracting Index...")    
-    url = f"{url}/" if url[-1] != '/' else url
+    link = f"{link}/" if link[-1] != '/' else link
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
     decrypted_response = await func(url, payload, auth_header)  # Corrected function call
