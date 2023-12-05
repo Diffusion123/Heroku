@@ -22,7 +22,7 @@ def bypass(_, message):
     if not domain:
         raise DirectDownloadLinkException("ERROR: Invalid URL")
     if "kayoanime.com" in link:
-        return kayoanime(link)
+        return kayoanime(link, message)
     else:
         return
 
@@ -30,7 +30,7 @@ def soup_res(link):
     response = requests.get(link)
     return BeautifulSoup(response.text, 'html.parser')
 
-def kayoanime(link):
+def kayoanime(link, message):
     soup = soup_res(link)
     links = soup.find_all('a', href=re.compile(r'https://drive.google.com/.*'))
     for l in links:
