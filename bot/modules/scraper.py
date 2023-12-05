@@ -73,7 +73,7 @@ async def cinevood(link, message):
                     new_url1 = get_redirected_url(url_link1)
                     result += f"{span_text}\n{span_text1} -- {new_url1}\n"
                 else:
-                    result += (f"{span_text1} -- {url_link1}\n"
+                    result += f"{span_text1} -- {url_link1}\n"
         else:
             result += f"{span_text}\nURL: {url_link}\n"
     await editMessage(reply, result)
