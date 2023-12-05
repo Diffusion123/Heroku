@@ -15,7 +15,7 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 
-async def scraper(_, message):
+def scraper(_, message):
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
     domain = urlparse(link).hostname
@@ -24,7 +24,7 @@ async def scraper(_, message):
     else:
         return index_link(_, link)
 
-async def func(link, payload, auth_header):
+def func(link, payload, auth_header):
     headers = {
         "Authorization": auth_header,
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; M2006C3LI) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Mobile Safari/537.36",
@@ -45,8 +45,8 @@ def get_readable_file_size(file_size):
     elif 1024**3 <= file_size < 1024**4:
         return f"{file_size / (1024**3):.2f} GB"
 
-async def index_link(_, link):  # Added 'message' parameter
-    reply = await sendMessage(message, "Extracting Index...")    
+def index_link(_, link):  # Added 'message' parameter
+    reply = sendMessage("Extracting Index...")    
     link = f"{link}/" if link[-1] != '/' else link
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
@@ -54,6 +54,6 @@ async def index_link(_, link):  # Added 'message' parameter
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result = '\n'.join([f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
-        await editMessage(reply, result)
+        editMessage(reply, result)
 
 bot.add_handler(MessageHandler(scraper, filters=command(BotCommands.ScraperCommand) & CustomFilters.sudo))
