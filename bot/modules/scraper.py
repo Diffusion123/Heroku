@@ -51,7 +51,8 @@ async def cinevood(link, message):
     reply = await sendMessage(message, "Processing To get Latest Links")    
     soup = soup_res(link)
     links = soup.find_all('a', href=re.compile(r'https://.*\/file/*'))
-    result = ""
+    result_list = []
+
     for link in links:
         url_link = link['href']
         span_tag = link.find_previous('span')
@@ -59,8 +60,7 @@ async def cinevood(link, message):
 
         if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link):
             new_url = get_redirected_url(url_link)
-            result += f"{span_text}\n\n URL: {new_url}\n\n"
-            await editMessage(reply, result)
+            result_list.append(f"{span_text}\n\n URL: {new_url}\n\n")
         elif re.match(r'https://linkbuzz.*\/', url_link):
             soup_link = soup_res(url_link)
             links1 = soup_link.find_all('a', href=re.compile(r'https://(.*gdtot|.*filepress|.*gdflix|zipylink|sharegdrive|dropgalaxy).*\/*'))
@@ -72,14 +72,15 @@ async def cinevood(link, message):
 
                 if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link1):
                     new_url1 = get_redirected_url(url_link1)
-                    result += f"{span_text}\n\n{span_text1} -- {new_url1}\n\n"
-                    await editMessage(reply, result)
+                    result_list.append(f"{span_text}\n\n{span_text1} -- {new_url1}\n\n")
                 else:
-                    result += f"{span_text1} -- {url_link1}\n\n"
-                    await editMessage(reply, result)
+                    result_list.append(f"{span_text1} -- {url_link1}\n\n")
         else:
-            result += f"{span_text}\nURL: {url_link}\n"
-            await editMessage(reply, result)
+            result_list.append(f"{span_text}\nURL: {url_link}\n")
+
+    final_result = "".join(result_list)
+    await editMessage(reply, final_result)
+
 
 def func(link, payload, auth_header):
     headers = {
