@@ -15,14 +15,14 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 
-def scraper(_, message):
+def bypass(_, message):
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
     domain = urlparse(link).hostname
     if not domain:
         raise DirectDownloadLinkException("ERROR: Invalid URL")
     else:
-        return index_link(_, message)
+        return
 
 def func(link, payload, auth_header):
     headers = {
@@ -45,7 +45,7 @@ def get_readable_file_size(file_size):
     elif 1024**3 <= file_size < 1024**4:
         return f"{file_size / (1024**3):.2f} GB"
 
-async def index_link(_, message):  # Added 'message' parameter
+async def scraper(_, message):  # Added 'message' parameter
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
     reply = await sendMessage(message, "Extracting Index...")    
@@ -59,3 +59,4 @@ async def index_link(_, message):  # Added 'message' parameter
         await editMessage(reply, result)
 
 bot.add_handler(MessageHandler(scraper, filters=command(BotCommands.ScraperCommand) & CustomFilters.sudo))
+bot.add_handler(MessageHandler(bypass, filters=command(BotCommands.ByPassCommand) & CustomFilters.sudo))
