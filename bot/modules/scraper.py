@@ -31,7 +31,7 @@ def soup_res(link):
     return BeautifulSoup(response.text, 'html.parser')
 
 async def kayoanime(link, message):
-    reply = sendMessage(message, "Getting Links")
+    reply = await sendMessage(message, "Getting Links")
     soup = soup_res(link)
     links = soup.find_all('a', href=re.compile(r'https://drive.google.com/.*'))
     for l in links:
