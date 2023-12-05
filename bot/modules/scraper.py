@@ -30,14 +30,15 @@ def soup_res(link):
     response = requests.get(link)
     return BeautifulSoup(response.text, 'html.parser')
 
-def kayoanime(link, message):
+async def kayoanime(link, message):
+    reply = sendMessage(message, "Getting Links")
     soup = soup_res(link)
     links = soup.find_all('a', href=re.compile(r'https://drive.google.com/.*'))
     for l in links:
         url_link = l['href']
         title = l.get_text()  # This gets the text within the <a> tag
         result = f"{title} \nURL: {url_link}\n"
-    sendMessage(message, result)
+    await editMessage(reply, result)
 
 def func(link, payload, auth_header):
     headers = {
