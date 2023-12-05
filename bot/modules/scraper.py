@@ -22,7 +22,7 @@ async def scraper(_, message):
     if not domain:
         raise DirectDownloadLinkException("ERROR: Invalid URL")
     else:
-        return index(link)
+        return index_link(link)
 
 async def func(link, payload, auth_header):
     headers = {
@@ -45,7 +45,7 @@ def get_readable_file_size(file_size):
     elif 1024**3 <= file_size < 1024**4:
         return f"{file_size / (1024**3):.2f} GB"
 
-async def index(link):  # Added 'message' parameter
+async def index_link(_, link):  # Added 'message' parameter
     reply = await sendMessage(message, "Extracting Index...")    
     link = f"{link}/" if link[-1] != '/' else link
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
