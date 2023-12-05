@@ -15,7 +15,7 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 
-def bypass(_, message):
+async def bypass(_, message):
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
     domain = urlparse(link).hostname
@@ -34,12 +34,13 @@ async def kayoanime(link, message):
     reply = await sendMessage(message, "Getting Links")
     soup = soup_res(link)
     links = soup.find_all('a', href=re.compile(r'https://drive.google.com/.*'))
+    result = ""
     for l in links:
         url_link = l['href']
         title = l.get_text()  # This gets the text within the <a> tag
-        result = f"{title} \nURL: {url_link}\n"
+        result += f"{title} \nURL: {url_link}\n"
     await editMessage(reply, result)
-
+    
 def func(link, payload, auth_header):
     headers = {
         "Authorization": auth_header,
