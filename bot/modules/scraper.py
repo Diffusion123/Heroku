@@ -22,7 +22,7 @@ def bypass(_, message):
     if not domain:
         raise DirectDownloadLinkException("ERROR: Invalid URL")
     if "kayoanime.com" in link:
-        return kayoanime(link, message)
+        await kayoanime(link, message)
     else:
         return
 
