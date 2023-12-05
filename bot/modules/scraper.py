@@ -37,7 +37,7 @@ def kayoanime(link):
         url_link = l['href']
         title = l.get_text()  # This gets the text within the <a> tag
         result = f"{title} \nURL: {url_link}\n"
-    sendmessage(message, result)
+    sendMessage(message, result)
 
 def func(link, payload, auth_header):
     headers = {
