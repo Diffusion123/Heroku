@@ -59,5 +59,6 @@ class _BotCommands:
         self.BroadcastCommand = [f'broadcast{CMD_SUFFIX}', f'bc{CMD_SUFFIX}']
         self.DynosCommand = [f'dynos{CMD_SUFFIX}', f'ds{CMD_SUFFIX}']
         self.ScraperCommand = f'scraper{CMD_SUFFIX}'
+        self.ByPassCommand = f'bypass{CMD_SUFFIX}'
 
 BotCommands = _BotCommands()
