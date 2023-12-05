@@ -21,8 +21,22 @@ def bypass(_, message):
     domain = urlparse(link).hostname
     if not domain:
         raise DirectDownloadLinkException("ERROR: Invalid URL")
+    if "kayoanime.com" in link
     else:
         return
+
+def soup_res(url):
+    response = requests.get(url)
+    return BeautifulSoup(response.text, 'html.parser')
+
+def kayoanime(url):
+    soup = soup_res(url)
+    links = soup.find_all('a', href=re.compile(r'https://drive.google.com/.*'))
+    for link in links:
+        url_link = link['href']
+        title = link.get_text()  # This gets the text within the <a> tag
+        result = f"{title} \nURL: {url_link}\n"
+    sendmessage(message, result)
 
 def func(link, payload, auth_header):
     headers = {
