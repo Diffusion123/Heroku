@@ -22,7 +22,7 @@ def scraper(_, message):
     if not domain:
         raise DirectDownloadLinkException("ERROR: Invalid URL")
     else:
-        return index_link(link, message)
+        return index_link(_, message)
 
 def func(link, payload, auth_header):
     headers = {
@@ -45,7 +45,9 @@ def get_readable_file_size(file_size):
     elif 1024**3 <= file_size < 1024**4:
         return f"{file_size / (1024**3):.2f} GB"
 
-def index_link(link, message):  # Added 'message' parameter
+def index_link(_, message):  # Added 'message' parameter
+    args = message.text.split()
+    link = args[1] if len(args) > 1 else ''
     reply = sendMessage(message, "Extracting Index...")    
     link = f"{link}/" if link[-1] != '/' else link
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
