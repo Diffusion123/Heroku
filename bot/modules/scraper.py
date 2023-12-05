@@ -22,7 +22,7 @@ async def scraper(_, message):
     if not domain:
         raise DirectDownloadLinkException("ERROR: Invalid URL")
     else:
-        return index_link(link)
+        return index_link(_, link)
 
 async def func(link, payload, auth_header):
     headers = {
