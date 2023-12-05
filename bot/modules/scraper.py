@@ -52,7 +52,7 @@ async def scraper(_, message):  # Added 'message' parameter
     link = f"{link}/" if link[-1] != '/' else link
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
-    decrypted_response = await func(link, payload, auth_header)  # Corrected function call
+    decrypted_response = func(link, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result = '\n'.join([f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
