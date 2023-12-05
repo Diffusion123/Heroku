@@ -38,7 +38,7 @@ async def kayoanime(link, message):
     for l in links:
         url_link = l['href']
         title = l.get_text()  # This gets the text within the <a> tag
-        result += f"{title} \nURL: {url_link}\n"
+        result += f"{title} \nURL: {url_link}\n\n"
     await editMessage(reply, result)
     
 def func(link, payload, auth_header):
