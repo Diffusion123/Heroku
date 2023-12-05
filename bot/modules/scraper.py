@@ -45,7 +45,7 @@ def get_readable_file_size(file_size):
     elif 1024**3 <= file_size < 1024**4:
         return f"{file_size / (1024**3):.2f} GB"
 
-def index_link(_, link):  # Added 'message' parameter
+def index_link(link):  # Added 'message' parameter
     reply = sendMessage("Extracting Index...")    
     link = f"{link}/" if link[-1] != '/' else link
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
