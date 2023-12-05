@@ -57,7 +57,7 @@ async def cinevood(link, message):
         span_tag = link.find_previous('span')  # Find the previous 'span' tag for the current link
         span_text = span_tag.text.strip() # Use strip() to remove leading/trailing whitespaces
         new_url = get_redirected_url(url_link)
-        result += f"{span_text}\nURL: {new_url}\n"
+        result += f"{span_text}\n\nURL: {new_url}\n\nn"
     await editMessage(reply, result)
 
 def func(link, payload, auth_header):
