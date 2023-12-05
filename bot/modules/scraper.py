@@ -23,8 +23,14 @@ async def bypass(_, message):
         raise DirectDownloadLinkException("ERROR: Invalid URL")
     if "kayoanime.com" in link:
         await kayoanime(link, message)
+    elif "cinevood.mom" in link:
+        await cinevood(link, message)
     else:
         return
+
+def get_redirected_url(url):
+    response = requests.head(url, allow_redirects=True)
+    return response.url
 
 def soup_res(link):
     response = requests.get(link)
@@ -41,6 +47,19 @@ async def kayoanime(link, message):
         result += f"{title}  ---  <a href='{url_link}'>Gdrive link</a>\n\n"
     await editMessage(reply, result)
     
+async def cinevood(link, message):
+    reply = await sendMessage(message, "Processing {link} To get Latest Links")    
+    soup = soup_res(url)
+    links = soup.find_all('a', href=re.compile(r'https://.*\/file/*'))
+    result = ""
+    for link in links:
+        url_link = link['href']
+        span_tag = link.find_previous('span')  # Find the previous 'span' tag for the current link
+        span_text = span_tag.text.strip() # Use strip() to remove leading/trailing whitespaces
+        new_url = get_redirected_url(url_link)
+        result += f"{span_text}\nURL: {new_url}\n"
+    await editMessage(reply, result)
+
 def func(link, payload, auth_header):
     headers = {
         "Authorization": auth_header,
