@@ -21,7 +21,7 @@ def bypass(_, message):
     domain = urlparse(link).hostname
     if not domain:
         raise DirectDownloadLinkException("ERROR: Invalid URL")
-    if "kayoanime.com" in link
+    if "kayoanime.com" in link:
         return kayoanime(link)
     else:
         return
