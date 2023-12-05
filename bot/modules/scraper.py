@@ -54,10 +54,28 @@ async def cinevood(link, message):
     result = ""
     for link in links:
         url_link = link['href']
-        span_tag = link.find_previous('span')  # Find the previous 'span' tag for the current link
-        span_text = span_tag.text.strip() # Use strip() to remove leading/trailing whitespaces
-        new_url = get_redirected_url(url_link)
-        result += f"{span_text}\n\nURL: {new_url}\n\n"
+        span_tag = link.find_previous('span')
+        span_text = span_tag.text.strip()
+
+        if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link):
+            new_url = get_redirected_url(url_link)
+            result += f"{span_text}\nURL: {new_url}\n"
+        elif re.match(r'https://linkbuzz.*\/', url_link):
+            soup_link = soup_res(url_link)
+            links1 = soup_link.find_all('a', href=re.compile(r'https://(.*gdtot|.*filepress|.*gdflix|zipylink|sharegdrive|dropgalaxy).*\/*'))
+
+            for link1 in links1:
+                url_link1 = link1['href']
+                span_tag1 = link1.find_previous('span')
+                span_text1 = span_tag1.text.strip()
+
+                if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link1):
+                    new_url1 = get_redirected_url(url_link1)
+                    result += f"{span_text}\n{span_text1} -- {new_url1}\n"
+                else:
+                    result += (f"{span_text1} -- {url_link1}\n"
+        else:
+            result += f"{span_text}\nURL: {url_link}\n"
     await editMessage(reply, result)
 
 def func(link, payload, auth_header):
