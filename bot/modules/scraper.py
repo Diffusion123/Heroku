@@ -5,7 +5,7 @@ import requests
 from asyncio import sleep
 from re import search as re_search
 from urllib.parse import unquote, urlparse
-
+from bs4 import BeautifulSoup
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
 
