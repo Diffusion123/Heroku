@@ -28,9 +28,9 @@ async def bypass(_, message):
     else:
         return
 
-def get_redirected_url(url_link):
-    response = requests.head(url_link, allow_redirects=True)
-    return response.url_link
+def get_redirected_url(url):
+    response = requests.head(url, allow_redirects=True)
+    return response.url
 
 def soup_res(link):
     response = requests.get(link)
@@ -49,7 +49,7 @@ async def kayoanime(link, message):
     
 async def cinevood(link, message):
     reply = await sendMessage(message, "Processing To get Latest Links")    
-    soup = soup_res(url)
+    soup = soup_res(link)
     links = soup.find_all('a', href=re.compile(r'https://.*\/file/*'))
     result = ""
     for link in links:
