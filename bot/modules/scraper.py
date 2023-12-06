@@ -51,7 +51,7 @@ async def cinevood(link, message):
     reply = await sendMessage(message, "Processing To get Latest Links")    
     soup = soup_res(link)
     links = soup.find_all('a', href=re.compile(r'https://.*\/file/*'))
-    result = 
+    result = ""
 
     for link in links:
         url_link = link['href']
