@@ -80,9 +80,10 @@ def get_links(episode_url):
     title_tag = soup.find('title')
     if title_tag:
         title_text = title_tag.get_text()
+        text_part = title_text.replace("Watch ", "").replace(" at Gogoanime", "")
     for c in links:
         url_link = c['data-video']
-        return f"{title_text}\n1080P - {url_link}\n\n"
+        return f"{text_part}\n Watch Online <a href={url_link}>1080P Dood Stream HD<\a>\n\n"
         
 async def gogoanimes(link, message):
     reply = await sendMessage(message, "Getting Links from Gogoanimes")
