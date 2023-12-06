@@ -23,7 +23,7 @@ async def bypass(_, message):
         raise DirectDownloadLinkException("ERROR: Invalid URL")
     if "kayoanime.com" in link:
         await kayoanime(link, message)
-    elif "cinevood.mom" in link:
+    elif "linkbuzz.click" in link:
         await cinevood(link, message)
     else:
         return
@@ -46,42 +46,17 @@ async def kayoanime(link, message):
         title = l.get_text()  # This gets the text within the <a> tag
         result += f"{title}  ---  <a href='{url_link}'>Gdrive link</a>\n\n"
     await editMessage(reply, result)
-    
-async def cinevood(link, message):
-    reply = await sendMessage(message, "Processing To get Latest Links")    
+   
+async def linkbuzz(link, message):
+    reply = await sendMessage(message, "Requesting linkbuzz.click for links")
     soup = soup_res(link)
-    links = soup.find_all('a', href=re.compile(r'https://.*\/file/*'))
+    links = soup.find_all('a', href=re.compile(r'https:(.*gdtot|.*filepress|.*gdflix)/.*'))
     result = ""
-
-    for link in links:
-        url_link = link['href']
-        span_tag = link.find_previous('span')
-        span_text = span_tag.text.strip()
-
-        if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link):
-            new_url = get_redirected_url(url_link)
-            result += f"{span_text}\n\n URL: {new_url}\n\n"
-        elif re.match(r'https://linkbuzz.*\/*', url_link):
-            await linkbuzz(span_text, url_link, reply)      
-        else:
-            result += f"{span_text}\nURL: {url_link}\n"
-        await editMessage(reply, result)
-
-async def linkbuzz(span_text, url_link, reply):
-    result = ""
-    soup_link = soup_res(url_link)
-    links1 = soup_link.find_all('a', href=re.compile(r'https://(.*gdtot|.*filepress|.*gdflix|zipylink|sharegdrive|dropgalaxy).*\/*'))
-    for link1 in links1:
-        url_link1 = link1['href']
-        span_tag1 = link1.find_previous('span')
-        span_text1 = span_tag1.text.strip()
-
-        if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link1):
-            new_url1 = get_redirected_url(url_link1)
-            result += f"{span_text}\n\n{span_text1} -- {new_url1}\n\n"
-        else:
-            result += f"{span_text1} -- {url_link1}\n\n"
-        await editMessage(reply, result)
+    for c in links:
+        url_link = c['href']
+        title = c.get_text()
+        result += f"{title} ---- <a href='{url_link}'>Download Link</a>\n\n"
+    await editMessage(reply, result)
     
 def func(link, payload, auth_header):
     headers = {
