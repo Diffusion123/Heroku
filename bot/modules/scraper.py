@@ -113,9 +113,6 @@ async def scraper(_, message):  # Added 'message' parameter
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result += '\n'.join([f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
-        if len(result) > 4000:
-            await sendMessage(reply, result)
-    if result != "":
         await send_long_message(reply, result)
         await deleteMessage(reply) 
 
