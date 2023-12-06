@@ -50,7 +50,7 @@ async def kayoanime(link, message):
 async def linkbuzz(link, message):
     reply = await sendMessage(message, "Requesting linkbuzz.click for links")
     soup = soup_res(link)
-    links = soup.find_all('a',  href=re.compile(r'https:(.*gdtot.*|.*filepress.*|.*gdflix).*/\.*')
+    links = soup.find_all('a',  href=re.compile(r'https:(.*gdtot.*|.*filepress.*|.*gdflix).*/\.*'))
     result = ""
     for c in links:
         url_link = c['href']
