@@ -91,8 +91,8 @@ async def gogoanimes(link, message):
     each_url = f"https://{m_url}/{new_url}-episode-"
     num_episodes = int(last_episode(link))
     episode_urls = generate_episode_urls(link, each_url, num_episodes)
-    result = ""
     for episode_url in episode_urls:
+        result = ""
         result += get_links(episode_url)
         await sendMessage(reply, result)
         await deleteMessage(reply)
