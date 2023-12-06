@@ -68,6 +68,7 @@ async def cinevood(link, message):
         await editMessage(reply, result)
 
 async def linkbuzz(span_text, url_link, reply):
+    result = ""
     soup_link = soup_res(url_link)
     links1 = soup_link.find_all('a', href=re.compile(r'https://(.*gdtot|.*filepress|.*gdflix|zipylink|sharegdrive|dropgalaxy).*\/*'))
     for link1 in links1:
