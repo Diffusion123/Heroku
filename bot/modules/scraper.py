@@ -24,7 +24,7 @@ async def bypass(_, message):
     if "kayoanime.com" in link:
         await kayoanime(link, message)
     elif "linkbuzz.click" in link:
-        await cinevood(link, message)
+        await linkbuzz(link, message)
     else:
         return
 
