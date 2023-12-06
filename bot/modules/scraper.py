@@ -62,24 +62,26 @@ async def cinevood(link, message):
             new_url = get_redirected_url(url_link)
             result += f"{span_text}\n\n URL: {new_url}\n\n"
         elif re.match(r'https://linkbuzz.*\/', url_link):
-            soup_link = soup_res(url_link)
-            links1 = soup_link.find_all('a', href=re.compile(r'https://(.*gdtot|.*filepress|.*gdflix|zipylink|sharegdrive|dropgalaxy).*\/*'))
-
-            for link1 in links1:
-                url_link1 = link1['href']
-                span_tag1 = link1.find_previous('span')
-                span_text1 = span_tag1.text.strip()
-
-                if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link1):
-                    new_url1 = get_redirected_url(url_link1)
-                    result += f"{span_text}\n\n{span_text1} -- {new_url1}\n\n"
-                else:
-                    result += f"{span_text1} -- {url_link1}\n\n"
+            linkbuzz(span_text, url_link, reply)      
         else:
             result += f"{span_text}\nURL: {url_link}\n"
-    await editMessage(reply, result)
+        await editMessage(reply, result)
 
+def linkbuzz(span_text, url_link, reply):
+    soup_link = soup_res(url_link)
+    links1 = soup_link.find_all('a', href=re.compile(r'https://(.*gdtot|.*filepress|.*gdflix|zipylink|sharegdrive|dropgalaxy).*\/*'))
+    for link1 in links1:
+        url_link1 = link1['href']
+        span_tag1 = link1.find_previous('span')
+        span_text1 = span_tag1.text.strip()
 
+        if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link1):
+            new_url1 = get_redirected_url(url_link1)
+            result += f"{span_text}\n\n{span_text1} -- {new_url1}\n\n"
+        else:
+            result += f"{span_text1} -- {url_link1}\n\n"
+        await editMessage(reply, result)
+    
 def func(link, payload, auth_header):
     headers = {
         "Authorization": auth_header,
@@ -113,14 +115,8 @@ async def scraper(_, message):  # Added 'message' parameter
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
         result += '\n'.join([f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
-        await send_long_message(reply, result)
+        await sendMessage(reply, result)
         await deleteMessage(reply) 
 
-async def send_long_message(chat_id, text):
-    max_length = 4000
-    chunks = [text[i:i+max_length] for i in range(0, len(text), max_length)]
-    for chunk in chunks:
-        await sendMessage(chat_id, chunk)
-       
 bot.add_handler(MessageHandler(scraper, filters=command(BotCommands.ScraperCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(bypass, filters=command(BotCommands.ByPassCommand) & CustomFilters.sudo))
