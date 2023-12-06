@@ -25,6 +25,8 @@ async def bypass(_, message):
         await kayoanime(link, message)
     elif "linkbuzz.click" in link:
         await linkbuzz(link, message)
+    elif "www9.gogoanimes.fi" in link:
+        await gogoanimes(link, message)
     else:
         return
 
@@ -60,7 +62,41 @@ async def linkbuzz(link, message):
             result += f"\n\n{title} ---- <a href='{new_url}'>Download Link</a>\n\n"
             await sendMessage(reply, result)
             await deleteMessage(reply)
-            
+
+def last_episode(url):
+    soup = soup_res(url)
+    return soup.find('a', class_='active')['ep_end']
+
+def generate_episode_urls(base_url, format, num_episodes):
+    episode_urls = []
+    for episode in range(1, num_episodes + 1):
+        episode_url = f"{format}{episode}"
+        episode_urls.append(episode_url)
+    return episode_urls
+
+def get_links(episode_url):
+    soup = soup_res(episode_url)
+    links = soup.find_all('a', {'data-video': re.compile(r'https://dood.*\/.*')})
+    title_tag = soup.find('title')
+    if title_tag:
+        title_text = title_tag.get_text()
+    for c in links:
+        url_link = c['data-video']
+        return f"{title_text}\n1080P - {url_link}\n\n"
+        
+async def gogoanimes(link, message):
+    reply = sendMessage(message, "Getting Links from Gogoanimes")
+    new_url = link.split("/")[4]
+    m_url = link.split("/")[2]
+    each_url = f"https://{m_url}/{new_url}-episode-"
+    num_episodes = int(last_episode(link))
+    episode_urls = generate_episode_urls(link, each_url, num_episodes)
+    result = ""
+    for episode_url in episode_urls:
+        result += get_links(episode_url)
+        await sendMessage(reply, result)
+        await deleteMessage(reply)
+        
 def func(link, payload, auth_header):
     headers = {
         "Authorization": auth_header,
