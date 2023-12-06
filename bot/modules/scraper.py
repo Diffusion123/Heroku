@@ -62,12 +62,12 @@ async def cinevood(link, message):
             new_url = get_redirected_url(url_link)
             result += f"{span_text}\n\n URL: {new_url}\n\n"
         elif re.match(r'https://linkbuzz.*\/', url_link):
-            linkbuzz(span_text, url_link, reply)      
+            await linkbuzz(span_text, url_link, reply)      
         else:
             result += f"{span_text}\nURL: {url_link}\n"
         await editMessage(reply, result)
 
-def linkbuzz(span_text, url_link, reply):
+async def linkbuzz(span_text, url_link, reply):
     soup_link = soup_res(url_link)
     links1 = soup_link.find_all('a', href=re.compile(r'https://(.*gdtot|.*filepress|.*gdflix|zipylink|sharegdrive|dropgalaxy).*\/*'))
     for link1 in links1:
