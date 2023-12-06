@@ -109,14 +109,21 @@ async def scraper(_, message):  # Added 'message' parameter
     auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
     payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
     decrypted_response = func(link, payload, auth_header)  # Corrected function call
+    result = ""
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
-        result = '\n'.join([f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
+        result += '\n'.join([f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
         if len(result) > 4000:
             await sendMessage(reply, result)
     if result != "":
-        await sendMessage(reply, result)
-        await deleteMessage(reply)
-        
+        await send_long_message(reply, result)
+        await deleteMessage(reply) 
+
+async def send_long_message(chat_id, text):
+    max_length = 4000
+    chunks = [text[i:i+max_length] for i in range(0, len(text), max_length)]
+    for chunk in chunks:
+        await sendMessage(chat_id, chunk)
+       
 bot.add_handler(MessageHandler(scraper, filters=command(BotCommands.ScraperCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(bypass, filters=command(BotCommands.ByPassCommand) & CustomFilters.sudo))
