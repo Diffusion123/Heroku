@@ -51,15 +51,15 @@ async def linkbuzz(link, message):
     reply = await sendMessage(message, "Requesting linkbuzz.click for links")
     soup = soup_res(link)
     links = soup.find_all('a',  href=re.compile(r'https:(.*gdtot.*|.*filepress.*|.*gdflix).*/\.*'))
-    result = ""
     for c in links:
         url_link = c['href']
         title = c.get_text()
         if re.match(r'https:(.*gdtot.*|.*filepress.*|.*gdflix).*/\.*', url_link):
             new_url = get_redirected_url(url_link)
-            result += f"{title} ---- <a href='{new_url}'>Download Link</a>\n\n"
-            await editMessage(reply, result)
-    
+            result = f"{title} ---- <a href='{new_url}'>Download Link</a>\n\n"
+            await sendMessage(reply, result)
+            await deleteMessage(reply)
+            
 def func(link, payload, auth_header):
     headers = {
         "Authorization": auth_header,
