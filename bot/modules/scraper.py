@@ -61,7 +61,7 @@ async def cinevood(link, message):
         if re.match(r'https://(.*gdtot|.*filepress|.*gdflix).*\/*', url_link):
             new_url = get_redirected_url(url_link)
             result += f"{span_text}\n\n URL: {new_url}\n\n"
-        elif re.match(r'https://linkbuzz.*\/', url_link):
+        elif re.match(r'https://linkbuzz.*\/*', url_link):
             await linkbuzz(span_text, url_link, reply)      
         else:
             result += f"{span_text}\nURL: {url_link}\n"
