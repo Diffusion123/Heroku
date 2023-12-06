@@ -85,7 +85,7 @@ def get_links(episode_url):
         return f"{title_text}\n1080P - {url_link}\n\n"
         
 async def gogoanimes(link, message):
-    reply = sendMessage(message, "Getting Links from Gogoanimes")
+    reply = await sendMessage(message, "Getting Links from Gogoanimes")
     new_url = link.split("/")[4]
     m_url = link.split("/")[2]
     each_url = f"https://{m_url}/{new_url}-episode-"
