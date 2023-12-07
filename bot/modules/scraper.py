@@ -27,16 +27,49 @@ async def bypass(_, message):
         await linkbuzz(link, message)
     elif "www9.gogoanimes.fi" in link:
         await gogoanimes(link, message)
+    elif "animeflix.website" in link:
+        await animeflix(link, message)
     else:
         return
+
+def last_episode(url):
+    soup = soup_res(url)
+    return soup.find('a', class_='active')['ep_end']
+
+def generate_episode_urls(base_url, format, num_episodes):
+    episode_urls = []
+    for episode in range(1, num_episodes + 1):
+        episode_url = f"{format}{episode}"
+        episode_urls.append(episode_url)
+    return episode_urls
 
 def get_redirected_url(url):
     response = requests.head(url, allow_redirects=True)
     return response.url
 
 def soup_res(link):
-    response = requests.get(link)
-    return BeautifulSoup(response.text, 'html.parser')
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+    response = requests.get(link, headers=headers)
+    return BeautifulSoup(response.content, 'html.parser')
+
+def get_links(episode_url):
+    soup = soup_res(episode_url)
+    links = soup.find_all('a', {'data-video': re.compile(r'https://dood.*\/.*')})
+    title_tag = soup.find('title')
+    if title_tag:
+        title_text = title_tag.get_text()
+        text_part = title_text.replace("Watch ", "").replace(" at Gogoanime", "")
+    for c in links:
+        url_link = c['data-video']
+        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>\n\n"
+
+def final(new_url,t):
+    soup = soup_res(new_url)
+    link_list = soup.find_all('a', href=re.compile(r"https://(.*drive.*|.*yandex.*).*.*\/"))
+    for k in link_list:
+        drive = k['href']
+        title = " ".join(t.split('/')[0].split('-'))
+        return f"{title}\n{drive}\n"
 
 async def kayoanime(link, message):
     reply = await sendMessage(message, "Getting Links........")
@@ -62,28 +95,6 @@ async def linkbuzz(link, message):
             result += f"\n\n{title} ---- <a href='{new_url}'>Download Link</a>\n\n"
             await sendMessage(reply, result)
             await deleteMessage(reply)
-
-def last_episode(url):
-    soup = soup_res(url)
-    return soup.find('a', class_='active')['ep_end']
-
-def generate_episode_urls(base_url, format, num_episodes):
-    episode_urls = []
-    for episode in range(1, num_episodes + 1):
-        episode_url = f"{format}{episode}"
-        episode_urls.append(episode_url)
-    return episode_urls
-
-def get_links(episode_url):
-    soup = soup_res(episode_url)
-    links = soup.find_all('a', {'data-video': re.compile(r'https://dood.*\/.*')})
-    title_tag = soup.find('title')
-    if title_tag:
-        title_text = title_tag.get_text()
-        text_part = title_text.replace("Watch ", "").replace(" at Gogoanime", "")
-    for c in links:
-        url_link = c['data-video']
-        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>\n\n"
         
 async def gogoanimes(link, message):
     reply = await sendMessage(message, "Getting Links from Gogoanimes")
@@ -97,7 +108,27 @@ async def gogoanimes(link, message):
         result += get_links(episode_url)
         await sendMessage(reply, result)
         await deleteMessage(reply)
-        
+
+async def animeflix(link, message):
+    reply = await sendMessage(message, "Getting Links from animeflix.website")
+    soup = soup_res(link)
+    href_list = soup.find_all('a', class_='wb_button', href=re.compile(fr".*episode.*\/"))
+    result = ""
+    if href_list:
+        for text in href_list:
+            t = text['href']
+            new_url = f"https://{url.split('/')[2]}/{t}"
+            result += final(new_url,t)
+            await sendMessage(reply, result)
+    else:
+        href_list = soup.find_all('a', class_='wb_button', href=re.compile(fr".*drive.*\/"))
+        for span in href_list:
+            title1 = span['title']
+            link = span['href']
+            result += f"{title1}\n{link}\n"
+            await sendMessage(reply, result)
+    await deleteMessage(reply)
+
 def func(link, payload, auth_header):
     headers = {
         "Authorization": auth_header,
@@ -132,7 +163,6 @@ async def scraper(_, message):  # Added 'message' parameter
         result = '\n'.join([f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
         await sendMessage(reply, result)
         await deleteMessage(reply)
-
 
 bot.add_handler(MessageHandler(scraper, filters=command(BotCommands.ScraperCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(bypass, filters=command(BotCommands.ByPassCommand) & CustomFilters.sudo))
