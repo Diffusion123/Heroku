@@ -69,7 +69,7 @@ def final(new_url,t):
     for k in link_list:
         drive = k['href']
         title = " ".join(t.split('/')[0].split('-'))
-        return f"{title}\n{drive}\n"
+        return f"{title}\n <a href='{drive}'>Download Link</a>\n"
 
 async def kayoanime(link, message):
     reply = await sendMessage(message, "Getting Links........")
@@ -126,7 +126,7 @@ async def animeflix(link, message):
             result = ""
             title1 = span['title']
             l = span['href']
-            result += f"{title1}\n{l}\n"
+            result += f"{title1}\n <a href='{l}'>Download Link</a>\n\n"
             await sendMessage(reply, result)
     await deleteMessage(reply)
 
