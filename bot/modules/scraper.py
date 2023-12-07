@@ -117,15 +117,15 @@ async def animeflix(link, message):
     if href_list:
         for text in href_list:
             t = text['href']
-            new_url = f"https://{url.split('/')[2]}/{t}"
+            new_url = f"https://{link.split('/')[2]}/{t}"
             result += final(new_url,t)
             await sendMessage(reply, result)
     else:
         href_list = soup.find_all('a', class_='wb_button', href=re.compile(fr".*drive.*\/"))
         for span in href_list:
             title1 = span['title']
-            link = span['href']
-            result += f"{title1}\n{link}\n"
+            l = span['href']
+            result += f"{title1}\n{l}\n"
             await sendMessage(reply, result)
     await deleteMessage(reply)
 
