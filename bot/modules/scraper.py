@@ -167,7 +167,7 @@ async def scraper(_, message):
             for file in decrypted_response["data"]["files"]:
                 if file["mimeType"] != "application/vnd.google-apps.folder":
                     size = get_readable_file_size(file["size"])
-                    result = f"Name: {urllib.parse.unquote(file['name'])}  [{size}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{url}{urllib.parse.quote(file['name'])}'>Index link</a>\n"
+                    result = f"Name: {urllib.parse.unquote(file['name'])}  [{size}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>\n"
                     await sendMessage(reply, result)
                     await deleteMessage(reply)
         
