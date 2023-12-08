@@ -151,6 +151,23 @@ def get_readable_file_size(file_size):
     elif 1024**3 <= file_size < 1024**4:
         return f"{file_size / (1024**3):.2f} GB"
 
+async def index_folder(_, message):
+    args = message.text.split()
+    link = args[1] if len(args) > 1 else''
+    reply = await sendMessage(message, "Checking Folders........")
+    link = f"{link}/" if link[-1] != '/' else link
+    auth_header = f"Basic {base64.b64encode('username:password'.encode()).decode().strip()}"
+    payload = {"page_token": "", "page_index": 0}  # Assuming next_page_token is not needed here
+    decrypted_response = func(link, payload, auth_header)  # Corrected function call
+    folders = decrypted_response['data']['files']
+    for folder in folders:
+        folder_url = f"https://drive.google.com/drive/folders/{folder['id']}"
+        file_urls = f"{url}{urllib.parse.quote(folder['name'])}/"
+        f_result = ""
+        f_result += f"{folder['name']}\n{folder_url}\n{file_urls}\n"
+        await sendMessage(reply, result)
+        await deleteMessage(reply)
+
 async def scraper(_, message):  # Added 'message' parameter
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
@@ -161,9 +178,9 @@ async def scraper(_, message):  # Added 'message' parameter
     decrypted_response = func(link, payload, auth_header)  # Corrected function call
     if "data" in decrypted_response and "files" in decrypted_response["data"]:
         size = [get_readable_file_size(file["size"]) for file in decrypted_response["data"]["files"] if file["mimeType"] != "application/vnd.google-apps.folder"]
-        result = '\n'.join([f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"])
+        result = [f"\nName: {urllib.parse.unquote(file['name'])}  [{s}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>\n" for file, s in zip(decrypted_response["data"]["files"], size) if file["mimeType"] != "application/vnd.google-apps.folder"]
         await sendMessage(reply, result)
         await deleteMessage(reply)
-
+    
 bot.add_handler(MessageHandler(scraper, filters=command(BotCommands.ScraperCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(bypass, filters=command(BotCommands.ByPassCommand) & CustomFilters.sudo))
