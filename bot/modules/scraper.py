@@ -178,7 +178,8 @@ async def scraper(_, message):
                 file_urls = f"{link}{urllib.parse.quote(folder['name'])}/"
                 f_result = f"{folder['name']}\n{folder_url}\n{file_urls}\n"
                 await sendMessage(reply, f_result)
-    
+                await deleteMessage(reply)
+        
     except requests.exceptions.RequestException as e:
         # Handle exception appropriately
         print(f"Request Exception: {e}")
