@@ -175,7 +175,7 @@ async def scraper(_, message):
             folders = decrypted_response['data']['files']
             for folder in folders:
                 folder_url = f"https://drive.google.com/drive/folders/{folder['id']}"        
-                file_urls = f"{url}{urllib.parse.quote(folder['name'])}/"
+                file_urls = f"{link}{urllib.parse.quote(folder['name'])}/"
                 f_result = f"{folder['name']}\n{folder_url}\n{file_urls}\n"
                 await sendMessage(reply, f_result)
     
