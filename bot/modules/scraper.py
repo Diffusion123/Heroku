@@ -176,7 +176,7 @@ async def scraper(_, message):
             for folder in folders:
                 folder_url = f"https://drive.google.com/drive/folders/{folder['id']}"        
                 file_urls = f"{link}{urllib.parse.quote(folder['name'])}/"
-                f_result = f"{folder['name']}\n{folder_url}\n{file_urls}\n"
+                f_result = f"Name: {folder['name']}\n<a href='{folder_url}'>Folder Link</a>   <a href='{file_urls}'>Index Folder</a>\n"
                 await sendMessage(reply, f_result)
                 await deleteMessage(reply)
         
