@@ -31,6 +31,8 @@ async def bypass(_, message):
         await animeflix(link, message)
     elif "animeremux.xyz" in link:
         await animeremux(link, message)
+    elif "atishmkv.pro" in link:
+        await atishmkv(link, message)
     else:
         return
 
@@ -133,7 +135,30 @@ async def animeremux(link, message):
             sent = await sendMessage(reply, r)
             r = ""
             await deleteMessage(reply)
-        
+
+async def atishmkv(link, message):
+    reply = await sendMessage(message, "Getting Links from animeflix.website")
+    soup = soup_res(link)
+    list = soup.find_all('a', {'class': "button button-shadow"}, href=re.compile(r'.*\/'))
+    result = ""
+    for links in list:
+        text = links.get_text()
+        f = links.get('href', '')
+        result += f"{text}\n\n"
+        sub_soup = get_soup(f)
+        for a in sub_soup.find_all('a', href=re.compile(r'(?<=\?goto=)[^&]+?')):
+            href_links = a.get('href', '')
+            new_link = rget(href_links, allow_redirects=True)
+            new = new_link.url
+            if urlparse(new).hostname:
+                hostnames = urlparse(new).hostname
+                result += f"{hostnames.upper()}\n{new}\n\n"  # Append to 'r' instead of re
+                await editMessage(reply, result)
+                if len(result) > 4000:
+                    sent = await sendMessage(reply, result)
+                    result = ""
+                    await deleteMessage(reply)
+                    
 async def animeflix(link, message):
     reply = await sendMessage(message, "Getting Links from animeflix.website")
     soup = soup_res(link)
