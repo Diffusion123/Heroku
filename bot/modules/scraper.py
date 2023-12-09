@@ -127,7 +127,7 @@ async def animeremux(link, message):
         s = txt[0].text
         txt = l.text
         t = requests.get(result, allow_redirects=allow_redirect)
-        r += f"{l}/n{t.url}\n\n"
+        r += f"<a href='{t.url}'>{txt}</a>\n\n"
         await editMessage(reply, r)
         if len(result) > 4000:
             sent = await sendMessage(reply, r)
