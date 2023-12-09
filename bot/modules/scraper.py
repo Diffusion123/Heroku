@@ -168,9 +168,9 @@ async def scraper(_, message):
                 if file["mimeType"] != "application/vnd.google-apps.folder":
                     size = get_readable_file_size(file["size"])
                     result += f"Name: {urllib.parse.unquote(file['name'])}  [{size}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>\n"
-                    await editMessage(result, reply)
+                    await editMessage(reply, result)
                     if len(result) > 4000:
-                        sent = await sendMessage(result, reply)
+                        sent = await sendMessage(reply, result)
                         result = ""
         
         if not result:
