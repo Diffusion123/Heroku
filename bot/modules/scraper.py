@@ -144,7 +144,7 @@ async def atishmkv(link, message):
     for links in list:
         text = links.get_text()
         f = links.get('href', '')
-        result += f"\n{text}\n\n"
+        result += f"\n\n{text}\n\n"
         sub_soup = soup_res(f)
         for a in sub_soup.find_all('a', href=re.compile(r'(?<=\?goto=)[^&]+?')):
             href_links = a.get('href', '')
