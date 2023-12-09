@@ -148,7 +148,7 @@ async def atishmkv(link, message):
         sub_soup = soup_res(f)
         for a in sub_soup.find_all('a', href=re.compile(r'(?<=\?goto=)[^&]+?')):
             href_links = a.get('href', '')
-            new_link = rget(href_links, allow_redirects=True)
+            new_link = requests.get(href_links, allow_redirects=True)
             new = new_link.url
             if urlparse(new).hostname:
                 hostnames = urlparse(new).hostname
