@@ -152,7 +152,7 @@ async def atishmkv(link, message):
             new = new_link.url
             if urlparse(new).hostname:
                 hostnames = urlparse(new).hostname
-                result += f"\n<a href='{new}'>{hostnames.upper()}</a>\n\n"  # Append to 'r' instead of re
+                result += f"<a href='{new}'>{hostnames.upper()}</a>   "  # Append to 'r' instead of re
                 await editMessage(reply, result)
                 if len(result) > 4000:
                     sent = await sendMessage(reply, result)
