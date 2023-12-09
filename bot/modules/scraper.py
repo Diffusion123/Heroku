@@ -169,11 +169,12 @@ async def scraper(_, message):
                     size = get_readable_file_size(file["size"])
                     result += f"Name: {urllib.parse.unquote(file['name'])}  [{size}]\n <a href='https://drive.google.com/file/d/{urllib.parse.quote(file['id'])}'>Gdrive link</a>   <a href='{link}{urllib.parse.quote(file['name'])}'>Index link</a>\n\n"
                     await editMessage(reply, result)
-                    await deleteMessage(reply)
                     if len(result) > 4000:
                         sent = await sendMessage(reply, result)
                         result = ""
-        
+                        await deleteMessage(reply)
+
+
         if not result:
             folders = decrypted_response['data']['files']
             for folder in folders:
