@@ -132,7 +132,7 @@ async def animeremux(link, message):
         if len(result) > 4000:
             sent = await sendMessage(reply, r)
             r = ""
-       .    await deleteMessage(reply)
+            await deleteMessage(reply)
         
 async def animeflix(link, message):
     reply = await sendMessage(message, "Getting Links from animeflix.website")
