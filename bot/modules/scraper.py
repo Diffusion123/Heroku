@@ -181,7 +181,7 @@ async def scraper(_, message):
             for folder in folders:              
                 folder_url = f"https://drive.google.com/drive/folders/{folder['id']}"        
                 file_urls = f"{link}{urllib.parse.quote(folder['name'])}/"
-                f_result += f"Name: {folder['name']}\n<a href='{folder_url}'>Folder Link</a>   <a href='{file_urls}'>Index Folder</a>\n"
+                f_result += f"Name: {folder['name']}\n<a href='{folder_url}'>Folder Link</a>   <a href='{file_urls}'>Index Folder</a>\n\n"
                 await editMessage(reply, f_result)
                 if len(f_result) > 4000:
                     sent = await sendMessage(reply, f_result)
