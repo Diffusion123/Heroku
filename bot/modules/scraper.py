@@ -119,6 +119,7 @@ async def animeremux(link, message):
     soup = soup_res(link)
     links = soup.find_all('a', {'class': "shortc-button small blue"}, href=re.compile(r'.*\/'))
     count = 0
+    r = ""
     for l in links:
         result = l['href']
         allow_redirect = not re.match(r'https://drive.google.com.*\/', result)
@@ -127,11 +128,11 @@ async def animeremux(link, message):
         txt = l.text
         t = requests.get(result, allow_redirects=allow_redirect)
         r += f"{l}/n{t.url}\n\n"
-        await editMessage(reply, result)
+        await editMessage(reply, r)
         if len(result) > 4000:
-            sent = await sendMessage(reply, result)
-          result = ""
-           await deleteMessage(reply)
+            sent = await sendMessage(reply, r)
+            r = ""
+       .    await deleteMessage(reply)
         
 async def animeflix(link, message):
     reply = await sendMessage(message, "Getting Links from animeflix.website")
