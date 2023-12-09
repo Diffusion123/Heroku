@@ -137,7 +137,7 @@ async def animeremux(link, message):
             await deleteMessage(reply)
 
 async def atishmkv(link, message):
-    reply = await sendMessage(message, "Getting Links from animeflix.website")
+    reply = await sendMessage(message, "Getting Links from atishmkv.pro")
     soup = soup_res(link)
     list = soup.find_all('a', {'class': "button button-shadow"}, href=re.compile(r'.*\/'))
     result = ""
@@ -145,7 +145,7 @@ async def atishmkv(link, message):
         text = links.get_text()
         f = links.get('href', '')
         result += f"{text}\n\n"
-        sub_soup = get_soup(f)
+        sub_soup = soup_res(f)
         for a in sub_soup.find_all('a', href=re.compile(r'(?<=\?goto=)[^&]+?')):
             href_links = a.get('href', '')
             new_link = rget(href_links, allow_redirects=True)
