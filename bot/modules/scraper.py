@@ -176,9 +176,9 @@ async def scraper(_, message):
 
 
         if not result:
+            f_result = ""
             folders = decrypted_response['data']['files']
-            for folder in folders:
-                f_result = ""
+            for folder in folders:              
                 folder_url = f"https://drive.google.com/drive/folders/{folder['id']}"        
                 file_urls = f"{link}{urllib.parse.quote(folder['name'])}/"
                 f_result += f"Name: {folder['name']}\n<a href='{folder_url}'>Folder Link</a>   <a href='{file_urls}'>Index Folder</a>\n"
