@@ -29,6 +29,8 @@ async def bypass(_, message):
         await gogoanimes(link, message)
     elif "animeflix.website" in link:
         await animeflix(link, message)
+    elif "animeremux.xyz" in link:
+        await animeremux(link, message)
     else:
         return
 
@@ -111,8 +113,26 @@ async def gogoanimes(link, message):
             sent = await sendMessage(reply, result)
             result = ""
             await deleteMessage(reply)
-        
 
+async def animeremux(link, message):
+    reply = await sendMessage(message, "Getting Links........")
+    soup = soup_res(link)
+    links = soup.find_all('a', {'class': "shortc-button small blue"}, href=re.compile(r'.*\/'))
+    count = 0
+    for l in links:
+        result = l['href']
+        allow_redirect = not re.match(r'https://drive.google.com.*\/', result)
+        txt = soup.find_all('title')
+        s = txt[0].text
+        txt = l.text
+        t = requests.get(result, allow_redirects=allow_redirect)
+        r += f"{l}/n{t.url}\n\n"
+        await editMessage(reply, result)
+        if len(result) > 4000:
+            sent = await sendMessage(reply, result)
+          result = ""
+           await deleteMessage(reply)
+        
 async def animeflix(link, message):
     reply = await sendMessage(message, "Getting Links from animeflix.website")
     soup = soup_res(link)
