@@ -33,7 +33,7 @@ async def bypass(_, message):
         await animeremux(link, message)
     elif "atishmkv.pro" in link:
         await atishmkv(link, message)
-    else:
+    else:       
         return
 
 def last_episode(url):
@@ -242,6 +242,18 @@ async def scraper(_, message):
     except requests.exceptions.RequestException as e:
         # Handle exception appropriately
         print(f"Request Exception: {e}")
+
+async def transcript(url: str, DOMAIN: str, ref: str, sltime,) -> str:
+    reply = await sendMessage("Bypassing {ur}")
+    code = url.rstrip("/").split("/")[-1]
+    cget = create_scraper(allow_brotli=False).request
+    resp = cget("GET", f"{DOMAIN}/{code}", headers={"referer": ref})
+    soup = BeautifulSoup(resp.content, "html.parser")
+    data = { inp.get('name'): inp.get('value') for inp in soup.find_all("input") }
+    await asleep(sltime)
+    resp = cget("POST", f"{DOMAIN}/links/go", data=data, headers={ "x-requested-with": "XMLHttpRequest" })
+    result = resp.json()['url']
+    await editMessage(reply, result)
 
 bot.add_handler(MessageHandler(scraper, filters=command(BotCommands.ScraperCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(bypass, filters=command(BotCommands.ByPassCommand) & CustomFilters.sudo))
