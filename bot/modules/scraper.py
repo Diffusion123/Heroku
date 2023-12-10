@@ -65,7 +65,8 @@ def get_links(episode_url):
         text_part = title_text.replace("Watch ", "").replace(" at Gogoanime", "")
     for c in links:
         url_link = c['data-video']
-        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>\n\n"
+        r = url_link.replace("/e/", "/d/")
+        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
 
 def final(new_url,t):
     soup = soup_res(new_url)
