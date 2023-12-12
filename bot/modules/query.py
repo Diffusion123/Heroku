@@ -27,8 +27,8 @@ async def query_search(query, message):
     args = arg_parser(input_list[1:], arg_base)
     cmd = input_list[0].split('@')[0]
 
-    word          = args['word']
-    gogoanimes   = args['-g']
+    word = args['word']
+    gogoanimes = args['-g']
 
     if gogoanimes:
         search_anime(cmd)
