@@ -31,17 +31,19 @@ async def query_search(_, message):
     gogoanimes = args['-g']
 
     if gogoanimes:
-        await search_anime(cmd)
+        await search_anime(cmd, message)
     
-async def search_anime(query):
+async def search_anime(query, message):
+    reply = sendMessage(message, "Searching.....)
     base_url = "https://www9.gogoanimes.fi/search.html?keyword="
     search_url = f"{base_url}{query}"
     soup = soup_res(search_url)
     links = soup.find_all('a', href=re.compile(r'.*/category/.*'))
     for r in links:
         anime_href = r['href']
-        anime_link = f"https://www9.gogoanimes.fi{anime_href}"
-        await sendMessage(anime_link)
+        anime_link = ""
+        anime_link += f"https://www9.gogoanimes.fi{anime_href}"
+        await editMessage(reply, anime_link)
         
 def arg_parser(items, arg_base):
     if not items:
