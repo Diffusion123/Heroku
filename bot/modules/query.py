@@ -11,7 +11,7 @@ from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
 
 from bot import bot
-from modules.scraper import soup_res, gogoanimes
+from bot.modules.scraper import soup_res, gogoanimes
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage, deleteMessage
