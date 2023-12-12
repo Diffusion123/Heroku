@@ -17,11 +17,11 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage, deleteMessage
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 
-async def query_search(query, message):
+async def query_search(_, message):
     text = message.text.split('\n')
     input_list = text[0].split(' ')
 
-    arg_base = {'link': '', 
+    arg_base = {'word': '', 
                 '-g':'',
     }
     args = arg_parser(input_list[1:], arg_base)
