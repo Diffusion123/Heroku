@@ -60,5 +60,6 @@ class _BotCommands:
         self.DynosCommand = [f'dynos{CMD_SUFFIX}', f'ds{CMD_SUFFIX}']
         self.ScraperCommand = f'scraper{CMD_SUFFIX}'
         self.ByPassCommand = f'bypass{CMD_SUFFIX}'
+        self.QueryCommand = f'query{CMD_SUFFIX}'
 
 BotCommands = _BotCommands()
