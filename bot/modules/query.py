@@ -31,7 +31,7 @@ async def query_search(_, message):
     gogoanimes = args['-g']
 
     if gogoanimes:
-        search_anime(cmd)
+        await search_anime(cmd)
     
 async def search_anime(query):
     base_url = "https://www9.gogoanimes.fi/search.html?keyword="
