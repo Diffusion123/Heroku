@@ -20,17 +20,16 @@ async def query_search(_, message):
     text = message.text.split('\n')
     input_list = text[0].split(' ')
 
-    arg_base = {'word': '', 
-                '-g':'',
-    }
+    arg_base = {'word': '', '-g': ''}
     args = arg_parser(input_list[1:], arg_base)
     cmd = input_list[0].split('@')[0]
 
     word = args['word']
-    gogo_animes = args['-g']
+    gogo_animes = args['-g']  # Renamed the variable
 
     if gogo_animes:
-        await search_anime(cmd, message)
+        await search_anime(cmd, message)  # Pass the correct variable to the function
+    
     
 async def search_anime(query, message):
     reply = await sendMessage(message, "Searching.....")
