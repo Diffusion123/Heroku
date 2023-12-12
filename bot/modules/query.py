@@ -34,7 +34,7 @@ async def query_search(_, message):
         await search_anime(cmd, message)
     
 async def search_anime(query, message):
-    reply = sendMessage(message, "Searching.....)
+    reply = sendMessage(message, "Searching.....")
     base_url = "https://www9.gogoanimes.fi/search.html?keyword="
     search_url = f"{base_url}{query}"
     soup = soup_res(search_url)
