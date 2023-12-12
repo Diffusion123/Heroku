@@ -41,8 +41,8 @@ async def search_anime(query):
     for r in links:
         anime_href = r['href']
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
-        await sendMessage(animelinks)
-
+        await sendMessage(anime_link)
+        
 def arg_parser(items, arg_base):
     if not items:
         return arg_base
