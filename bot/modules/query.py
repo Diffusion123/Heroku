@@ -11,7 +11,6 @@ from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
 
 from bot import bot
-from bot.modules.scraper import soup_res, gogoanimes
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import editMessage, sendMessage, deleteMessage
@@ -28,9 +27,9 @@ async def query_search(_, message):
     cmd = input_list[0].split('@')[0]
 
     word = args['word']
-    gogoanimes = args['-g']
+    gogo_animes = args['-g']
 
-    if gogoanimes:
+    if gogo_animes:
         await search_anime(cmd, message)
     
 async def search_anime(query, message):
