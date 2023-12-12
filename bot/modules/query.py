@@ -33,7 +33,7 @@ async def query_search(query, message):
     if gogoanimes:
         search_anime(cmd)
     
-def search_anime(query):
+async def search_anime(query):
     base_url = "https://www9.gogoanimes.fi/search.html?keyword="
     search_url = f"{base_url}{query}"
     soup = soup_res(search_url)
