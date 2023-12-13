@@ -9,7 +9,7 @@ from urllib.parse import unquote, urlparse
 
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
-
+from bot.modules.scraper import gogoanimes
 from bot import bot
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -39,6 +39,6 @@ async def query_search(_, message):
         unique_links.add(anime_link)
 
     result = "\n".join(unique_links)
-    await editMessage(reply, result)
+    gogoanimes(result)
 
 bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
