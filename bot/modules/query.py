@@ -19,16 +19,9 @@ from bot.helper.telegram_helper.button_build import ButtonMaker
 
 async def query_search(_, message):
     btns = ButtonMaker()
-    btns.ibutton('Back', f'wzmlx {user_id} stats home')
-    if key == "home":
-        btns = ButtonMaker()
-        btns.ibutton('Bot Stats', f'wzmlx {user_id} stats stbot')
-        btns.ibutton('OS Stats', f'wzmlx {user_id} stats stsys')
-        btns.ibutton('Repo Stats', f'wzmlx {user_id} stats strepo')
-        btns.ibutton('Bot Limits', f'wzmlx {user_id} stats botlimits')
-        msg = "⌬ <b><i>Bot & OS Statistics!</i></b>"
-    btns.ibutton('Close', f'wzmlx {user_id} close')
-    return msg, btns.build_menu(2)
+    buttons.ubutton("🔎 VIEW", link)
+    button = buttons.build_menu(1)
+    await sendMessage(message, button)
     
 async def search_anime(query, message):
     reply = await sendMessage(message, "Searching.....")
