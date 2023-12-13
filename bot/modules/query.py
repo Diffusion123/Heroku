@@ -38,7 +38,7 @@ async def query_search(_, message):
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)
 
-    result = "\n".join(unique_links)
+    result = unique_links
     await gogoanimes(result, message)
 
 bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
