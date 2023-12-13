@@ -18,8 +18,8 @@ from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 from bot.helper.telegram_helper.button_build import ButtonMaker
 
 async def query_search(_, message):
-    btns = ButtonMaker()
-    buttons.ubutton("🔎 VIEW", link)
+    buttons = ButtonMaker()
+    buttons.ubutton("🔎 VIEW")
     button = buttons.build_menu(1)
     await sendMessage(message, button)
     
