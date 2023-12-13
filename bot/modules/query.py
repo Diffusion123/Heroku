@@ -27,7 +27,7 @@ async def query_search(_, message):
     link = args[1] if len(args) > 1 else ''
     reply = await sendMessage(message, "Searching.....")
     base_url = "https://www9.gogoanimes.fi/search.html?keyword="
-    search_url = f"{base_url}{query}"
+    search_url = f"{base_url}{link}"
     soup = soup_res(search_url)
     links = soup.find_all('a', href=re.compile(r'.*/category/.*'))
     for r in links:
