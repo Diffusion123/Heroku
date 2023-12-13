@@ -30,10 +30,10 @@ async def query_search(_, message):
     search_url = f"{base_url}{link}"
     soup = soup_res(search_url)
     links = soup.find_all('a', href=re.compile(r'.*/category/.*'))
+    result = ""
     for r in links:
         anime_href = r['href']
-        anime_link = f"https://www9.gogoanimes.fi{anime_href}"
-        result = ""
+        anime_link = f"https://www9.gogoanimes.fi{anime_href}"       
         result += f"{anime_link}\n"
         await editMessage(reply, result)
 
