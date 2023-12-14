@@ -72,7 +72,7 @@ async def query_search(_, message):
         unique_links.add(anime_link)  # Add each unique link to the set
 
     for result in unique_links:
-        results += gogoanimes(result)
+        results = gogoanimes(result)
         await editMessage(reply, results)
         if len(results) > 4000:
             sent = await sendMessage(reply, results)
