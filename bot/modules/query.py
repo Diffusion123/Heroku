@@ -45,8 +45,8 @@ def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
 
-async def gogoanimes(link):
-    reply = await sendMessage("Searching.....")
+async def gogoanimes(link, message):
+    reply = await sendMessage(message, "Searching.....")
     new_url = link.split("/")[4]
     m_url = link.split("/")[2]
     each_url = f"https://{m_url}/{new_url}-episode-"
@@ -77,6 +77,6 @@ async def query_search(_, message):
         unique_links.add(anime_link)  # Add each unique link to the set
 
     for sorted in unique_links:
-        await gogoanimes(sorted)
+        await gogoanimes(sorted, message)
         
 bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
