@@ -1,4 +1,4 @@
-import re 
+import re
 import json
 import base64
 import requests
@@ -36,11 +36,15 @@ def get_links(episode_url):
         text_part = title_text.replace("Watch ", "").replace(" at Gogoanime", "")
     else:
         text_part = "Title not available"
+    
+    results = ""
     for c in links:
         url_link = c['data-video']
         r = url_link.replace("/e/", "/d/")
-        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
-        
+        results += f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
+    
+    return results
+
 def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
@@ -67,17 +71,17 @@ async def query_search(_, message):
     links = soup.find_all('a', href=re.compile(r'.*/category/.*'))
 
     unique_links = set()
-    ga_links = ""
     for r in links:
         anime_href = r['href']
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)  # Add each unique link to the set
 
+    ga_links = ""
     for result in unique_links:
         ga_links += gogoanimes(result)
-        await editMessage(reply, ga_links)
-        if len(ga_links) > 4000:
-            sent = await sendMessage(reply, ga_links)
-            result = ""
-            
+
+    await editMessage(reply, ga_links)
+    if len(ga_links) > 4000:
+        sent = await sendMessage(reply, ga_links)
+
 bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
