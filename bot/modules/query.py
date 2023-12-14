@@ -3,7 +3,6 @@ import json
 import base64
 import requests
 import urllib.parse
-from asyncio import sleep
 from bs4 import BeautifulSoup
 from urllib.parse import unquote, urlparse
 
@@ -37,11 +36,14 @@ def get_links(episode_url):
     else:
         text_part = "Title not available"
     
+    links_text = ""
     for c in links:
         url_link = c['data-video']
         r = url_link.replace("/e/", "/d/")
-        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
-  
+        links_text += f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
+    
+    return links_text
+
 def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
@@ -52,8 +54,10 @@ def gogoanimes(l):
     each_url = f"https://{m_url}/{new_url}-episode-"
     num_episodes = int(last_episode(l))
     episode_urls = generate_episode_urls(l, each_url, num_episodes)
+    links_text = ""
     for episode_url in episode_urls:
-        return get_links(episode_url)
+        links_text += get_links(episode_url)
+    return links_text
         
 async def query_search(_, message):
     args = message.text.split()
@@ -71,9 +75,8 @@ async def query_search(_, message):
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)  # Add each unique link to the set
 
-    
+    ga_links = ""
     for result in unique_links:
-        ga_links = ""
         ga_links += gogoanimes(result)
 
     await editMessage(reply, ga_links)
