@@ -71,17 +71,22 @@ async def query_search(_, message):
 
     unique_links = set()
     results = ""
-    
+
     for r in links:
         anime_href = r['href']
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)  # Add each unique link to the set
 
     for result in unique_links:
-        results += gogoanimes(result)
-        await editMessage(reply, results)
-        if len(results) > 4000:
-            sent = await sendMessage(reply, results)
-            result = ""
+        anime_results = gogoanimes(result)
+        
+        # Split the message into chunks to avoid Telegram message length limit
+        for chunk in [anime_results[i:i + 4000] for i in range(0, len(anime_results), 4000)]:
+            await editMessage(reply, chunk)
+            await sleep(1)  # Introducing a delay to avoid flooding
+
+    # If there are still results, send the remaining ones
+    if results:
+        await sendMessage(reply, results)
 
 bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
