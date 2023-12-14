@@ -45,7 +45,7 @@ def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
 
-async def gogoanimes(link, message):
+async def gogoanimes(link, reply):
     new_url = link.split("/")[4]
     m_url = link.split("/")[2]
     each_url = f"https://{m_url}/{new_url}-episode-"
