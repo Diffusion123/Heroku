@@ -36,29 +36,30 @@ def get_links(episode_url):
         text_part = title_text.replace("Watch ", "").replace(" at Gogoanime", "")
     else:
         text_part = "Title not available"
-    
-    result = ""
     for c in links:
         url_link = c['data-video']
         r = url_link.replace("/e/", "/d/")
-        result += f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
-    return result
-
+        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
+     
 def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
 
-def gogoanimes(l):
-    new_url = l.split("/")[4]
-    m_url = l.split("/")[2]
+def gogoanimes(link, message):
+    reply = await sendMessage(message, "Getting Links from Gogoanimes")
+    new_url = link.split("/")[4]
+    m_url = link.split("/")[2]
     each_url = f"https://{m_url}/{new_url}-episode-"
-    num_episodes = int(last_episode(l))
-    episode_urls = generate_episode_urls(l, each_url, num_episodes)
-    result = ""
+    num_episodes = int(last_episode(link))
+    episode_urls = generate_episode_urls(link, each_url, num_episodes)
+    t = ""
     for episode_url in episode_urls:
-        result += get_links(episode_url)
-    return result
-
+        t += get_links(episode_url)
+        await editMessage(reply, t)
+        if len(result) > 4000:
+            sent = await sendMessage(reply, t)
+            t = ""
+            
 async def query_search(_, message):
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
@@ -77,16 +78,8 @@ async def query_search(_, message):
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)  # Add each unique link to the set
 
-    for result in unique_links:
-        anime_results = gogoanimes(result)
+    for sorted in unique_links:
+        return gogoanimes(sorted, message)
         
-        # Split the message into chunks to avoid Telegram message length limit
-        for chunk in [anime_results[i:i + 4000] for i in range(0, len(anime_results), 4000)]:
-            await editMessage(reply, chunk)
-            await sleep(1)  # Introducing a delay to avoid flooding
-
-    # If there are still results, send the remaining ones
-    if results:
-        await sendMessage(reply, results)
-
+        
 bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
