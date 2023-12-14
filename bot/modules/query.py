@@ -37,14 +37,11 @@ def get_links(episode_url):
     else:
         text_part = "Title not available"
     
-    results = ""
     for c in links:
         url_link = c['data-video']
         r = url_link.replace("/e/", "/d/")
-        results += f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
-    
-    return results
-
+        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
+  
 def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
@@ -55,11 +52,9 @@ def gogoanimes(l):
     each_url = f"https://{m_url}/{new_url}-episode-"
     num_episodes = int(last_episode(l))
     episode_urls = generate_episode_urls(l, each_url, num_episodes)
-    results = ""
     for episode_url in episode_urls:
-        results += get_links(episode_url)
-    return results
-    
+        return get_links(episode_url)
+        
 async def query_search(_, message):
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
