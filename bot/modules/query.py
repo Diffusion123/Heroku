@@ -76,8 +76,9 @@ async def query_search(_, message):
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)  # Add each unique link to the set
 
-    ga_links = ""
+    
     for result in unique_links:
+        ga_links = ""
         ga_links += gogoanimes(result)
 
     await editMessage(reply, ga_links)
