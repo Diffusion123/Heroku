@@ -70,14 +70,13 @@ async def query_search(_, message):
     links = soup.find_all('a', href=re.compile(r'.*/category/.*'))
 
     unique_links = set()
-    results = ""
-
+    
     for r in links:
         anime_href = r['href']
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)  # Add each unique link to the set
 
     for sorted in unique_links:
-        return await gogoanimes(sorted, reply)
+        await gogoanimes(sorted, reply)
         
 bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
