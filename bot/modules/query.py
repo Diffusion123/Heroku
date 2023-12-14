@@ -51,9 +51,11 @@ def gogoanimes(l):
     each_url = f"https://{m_url}/{new_url}-episode-"
     num_episodes = int(last_episode(l))
     episode_urls = generate_episode_urls(l, each_url, num_episodes)
+    results = ""
     for episode_url in episode_urls:
-        return get_links(episode_url)
-        
+        results += get_links(episode_url)
+    return results
+    
 async def query_search(_, message):
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
@@ -65,17 +67,16 @@ async def query_search(_, message):
     links = soup.find_all('a', href=re.compile(r'.*/category/.*'))
 
     unique_links = set()
-    results = ""
     for r in links:
         anime_href = r['href']
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)  # Add each unique link to the set
 
     for result in unique_links:
-        results = gogoanimes(result)
-        await editMessage(reply, results)
-        if len(results) > 4000:
-            sent = await sendMessage(reply, results)
+        ga_links = gogoanimes(result)
+        await editMessage(reply, ga_links)
+        if len(ga_links) > 4000:
+            sent = await sendMessage(reply, ga_links)
             result = ""
             
 bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
