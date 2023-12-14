@@ -67,13 +67,14 @@ async def query_search(_, message):
     links = soup.find_all('a', href=re.compile(r'.*/category/.*'))
 
     unique_links = set()
+    ga_links = ""
     for r in links:
         anime_href = r['href']
         anime_link = f"https://www9.gogoanimes.fi{anime_href}"
         unique_links.add(anime_link)  # Add each unique link to the set
 
     for result in unique_links:
-        ga_links = gogoanimes(result)
+        ga_links += gogoanimes(result)
         await editMessage(reply, ga_links)
         if len(ga_links) > 4000:
             sent = await sendMessage(reply, ga_links)
