@@ -55,7 +55,7 @@ async def gogoanimes(link, reply):
     for episode_url in episode_urls:
         t += get_links(episode_url)
         await editMessage(reply, t)
-        if len(result) > 4000:
+        if len(t) > 4000:
             sent = await sendMessage(reply, t)
             t = ""
             
