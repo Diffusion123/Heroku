@@ -56,10 +56,10 @@ async def animedao_files(link, reply):
             result += f"DooD : <a href='{t}'>Watch Online</a> \nDownload Link: <a href='{r}'> Click Here</a>\n"
         elif re.search(r'alions', t):
             result += f"Alions : <a href='{t}'>Watch Online</a>\n"
-            
-        await editMessage(reply, result)
-        if len(result) > 4000:
-            sent = await sendMessage(reply, result)
-            result = ""
+        
+    await editMessage(reply, result) 
+    if len(result) > 4000:
+        sent = await sendMessage(reply, result)
+        result = ""
 
 bot.add_handler(MessageHandler(query_link, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
