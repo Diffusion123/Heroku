@@ -1,11 +1,7 @@
 import re
-import json
-import base64
 import requests
-import urllib.parse
 from asyncio import sleep
 from bs4 import BeautifulSoup
-from urllib.parse import unquote, urlparse
 
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
@@ -16,66 +12,54 @@ from bot.helper.telegram_helper.message_utils import editMessage, sendMessage, d
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 from bot.helper.telegram_helper.button_build import ButtonMaker
 
-def last_episode(url):
-    soup = soup_res(url)
-    return soup.find('a', class_='active')['ep_end']
-
-def generate_episode_urls(base_url, format, num_episodes):
-    episode_urls = []
-    for episode in range(1, num_episodes + 1):
-        episode_url = f"{format}{episode}"
-        episode_urls.append(episode_url)
-    return episode_urls
-
-def get_links(episode_url):
-    soup = soup_res(episode_url)
-    links = soup.find_all('a', {'data-video': re.compile(r'https://dood.*\/.*')})
-    title_tag = soup.find('title')
-    if title_tag:
-        title_text = title_tag.get_text()
-        text_part = title_text.replace("Watch ", "").replace(" at Gogoanime", "")
-    else:
-        text_part = "Title not available"
-    for c in links:
-        url_link = c['data-video']
-        r = url_link.replace("/e/", "/d/")
-        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
-     
 def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
 
-async def gogoanimes(link, message):
-    reply = await sendMessage(message, "Searching.....")
-    new_url = link.split("/")[4]
-    m_url = link.split("/")[2]
-    each_url = f"https://{m_url}/{new_url}-episode-"
-    num_episodes = int(last_episode(link))
-    episode_urls = generate_episode_urls(link, each_url, num_episodes)
-    t = ""
-    for episode_url in episode_urls:
-        t += get_links(episode_url)
-        await editMessage(reply, t)
-        if len(t) > 4000:
-            sent = await sendMessage(reply, t)
-            t = ""
-            
-async def query_search(_, message):
+async def query_link(_, message):
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
-    words, num = ''.join(filter(str.isalpha, link)), ''.join(filter(str.isdigit, link))
-    search_url = f"https://www9.gogoanimes.fi/filter.html?keyword={words}&year%5B%5D={num}&sort=title_az"
+    reply = await sendMessage(message, "Searching for the results")
+    search_url = f"https://animedao.bz/search.html?keyword={query}"
     soup = soup_res(search_url)
-    links = soup.find_all('a', href=re.compile(r'.*/category/.*'))
+    links = soup.find_all('a', href=re.compile(r'.*anime/.*'))
+    for link in links:
+        t = link['href']
+        new_url = f"https://animedao.bz{t}"
+        await animedao(new_url, reply)
 
-    unique_links = set()
-    
-    for r in links:
-        anime_href = r['href']
-        anime_link = f"https://www9.gogoanimes.fi{anime_href}"
-        unique_links.add(anime_link)  # Add each unique link to the set
+async def animedao(link, reply):
+    if re.search(r'.*episode.*', link):
+        animedao_files(link)
+    else:
+        soup = soup_res(link)
+        links = soup.find_all('a', {'class': "episode_well_link"}, href=re.compile(r'.*watch-online.*'))
+        for sub in links:
+            l_sub = sub['href']
+            part = link.split('/')[2]
+            mid = f"https://{part}"
+            final = mid + l_sub
+            await animedao_files(final, reply)
 
-    for sorted in unique_links:
-        await gogoanimes(sorted, message)
-        
-bot.add_handler(MessageHandler(query_search, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
+async def animedao_files(link, reply):
+    soup = soup_res(link)
+    links = soup.find_all('a', {'data-video': re.compile(r'.*(awish|dood|alions).*')})
+    result = ""
+    episode_title = soup.find('h2', class_='page_title').text
+    result += f"\n{episode_title}\n"
+    for url in links:
+        t = url['data-video']
+        if re.search(r'awish', t):
+            result += f"Awish : {t}\n"
+        elif re.search(r'dood', t):
+            r = t.replace("/e/", "/d/")
+            result += f"DooD : {t}\nDownload Link: {r}\n"
+        elif re.search(r'alions', t):
+            result += f"Alions : {t}\n"
+            
+        await editMessage(reply, result)
+        if len(result) > 4000:
+            sent = await sendMessage(reply, result)
+            result = ""
+
+bot.add_handler(MessageHandler(query_link, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
