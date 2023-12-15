@@ -18,9 +18,9 @@ def soup_res(url):
 
 async def query_link(_, message):
     args = message.text.split()
-    link = args[1] if len(args) > 1 else ''
+    word = args[1] if len(args) > 1 else ''
     reply = await sendMessage(message, "Searching for the results")
-    search_url = f"https://animedao.bz/search.html?keyword={query}"
+    search_url = f"https://animedao.bz/search.html?keyword={word}"
     soup = soup_res(search_url)
     links = soup.find_all('a', href=re.compile(r'.*anime/.*'))
     for link in links:
@@ -50,12 +50,12 @@ async def animedao_files(link, reply):
     for url in links:
         t = url['data-video']
         if re.search(r'awish', t):
-            result += f"Awish : {t}\n"
+            result += f"Awish : <a href='{t}'>Watch Online</a> \n"
         elif re.search(r'dood', t):
             r = t.replace("/e/", "/d/")
-            result += f"DooD : {t}\nDownload Link: {r}\n"
+            result += f"DooD : <a href='{t}'>Watch Online</a> \nDownload Link: <a href='{r}'> Click Here</a>\n"
         elif re.search(r'alions', t):
-            result += f"Alions : {t}\n"
+            result += f"Alions : <a href='{t}'>Watch Online</a>\n"
             
         await editMessage(reply, result)
         if len(result) > 4000:
