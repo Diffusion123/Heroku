@@ -60,14 +60,16 @@ async def kdrama(link, message):
     urls = []
     ep_title = []
     result = ""
-    for ep in ep_links:
-        ep_name = ep['title']
-        ep_title.append(ep_name)
+    for ep in ep_links:        
         if re.match(r'.*kissasian.*', link):
             new = f"https://kissasian.cz{ep['href']}"
+            ep_name = ep['title']     
+            
         elif re.match(r'.*dramacool.*', link):
             new = f"https://dramacool.com.pa{ep['href']}"
+            ep_title = soup.find('h3', class_='title').text
         
+        ep_title.append(ep_name)
         urls.append(new)
         
     for epi, reversed_url in zip(reversed(ep_title), reversed(urls)):
