@@ -31,8 +31,8 @@ async def bypass(_, message):
     elif re.search(r'.*(kissasian|dramacool).*', link):
         await kdrama(link, message)    
     else:
-        await search_kdrama(link, message)
-        
+        return
+
 def get_redirected_url(url):
     response = requests.head(url, allow_redirects=True)
     return response.url
@@ -282,3 +282,4 @@ async def transcript(url: str, DOMAIN: str, ref: str, sltime,) -> str:
 
 bot.add_handler(MessageHandler(scraper, filters=command(BotCommands.ScraperCommand) & CustomFilters.sudo))
 bot.add_handler(MessageHandler(bypass, filters=command(BotCommands.ByPassCommand) & CustomFilters.sudo))
+bot.add_handler(MessageHandler(search_kdrama, filters=command(BotCommands.KdramaCommand) & CustomFilters.sudo))
