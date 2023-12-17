@@ -63,9 +63,9 @@ async def kdrama(link, message):
     for ep in ep_links:
         ep_name = ep['title']
         ep_title.append(ep_name)
-        if re.match(r'.*kissasain.*', link):
+        if re.match(r'.*kissasian.*', link):
             new = f"https://kissasian.cz{ep['href']}"
-        else:
+        elif re.match(r'.*dramacool.*, link):
             new = f"https://dramacool.com.pa{ep['href']}"
         
         urls.append(new)
