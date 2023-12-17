@@ -60,8 +60,8 @@ async def search_kdrama(link, message):
     soup = soup_res(search)
     list_kdrama = soup.find_all('a', href=re.compile(r'.*info.*'))
     for kdrama in list_kdrama:
-    selected_kdrama = f"{domain}{kdrama['href']}"
-    await kissasian(selected_kdrama, message)
+        selected_kdrama = f"{domain}{kdrama['href']}"
+        await kissasian(selected_kdrama, message)
 
 async def kdrama(link, message):
     if re.match(r'.*kissasian.*', link):
