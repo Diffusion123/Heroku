@@ -76,8 +76,7 @@ async def kissasian(link, message):
             if len(result) > 4000:
                 sent = await sendMessage(reply, result)
                 result = ""
-                await deleteMessage(reply)
-
+                
 async def kayoanime(link, message):
     reply = await sendMessage(message, "Getting Links........")
     soup = soup_res(link)
