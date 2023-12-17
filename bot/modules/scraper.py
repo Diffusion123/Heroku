@@ -58,6 +58,7 @@ async def kissasian(link, message):
     soup = soup_res(link)
     ep_links = soup.find_all('a', href=re.compile(r'.*episode.*'))
     urls = []
+    result = ""
     for ep in ep_links:
         new = f"https://kissasian.cz{ep['href']}"
         urls.append(new)
@@ -65,7 +66,6 @@ async def kissasian(link, message):
     for reversed_url in reversed(urls):
         soup = soup_res(reversed_url)
         links = soup.find_all('option', value=re.compile(r'.*play.php.*'))
-        result = ""
         for r in links:
             t = r['value'].replace("play.php", "download")
             result += f"https:{t}\n\n"
