@@ -54,24 +54,51 @@ def final(new_url,t):
         return f"{title}\n <a href='{drive}'>Download Link</a>\n"
 
 async def kdrama(link, message):
-    reply = await sendMessage(message, "<code>Getting Links</code>")
-    soup = soup_res(link)
-    ep_links = soup.find_all('a', href=re.compile(r'.*episode.*'))
+    if re.match(r'.*kissasian.*', link):
+        await kissasian(link, message) 
+
+    elif re.match(r'.*dramacool.*', link):
+        await dramacool(link, message)
+
+async def dramacool(url, message):
+    reply = await sendMessage(message, "<code> Getting Links</code>")
+    urls =[]
+    ep_names = []
+    r = ""
+    t = url.split('/')[4]
+    soup = soup_res(url)
+    ep_links = soup.find_all('a', href=re.compile(fr'.*{t}.*episode.*'))
+   
+    for ep in ep_links:
+        ep_title = ep.find('h3', class_='title').text  # Changed from ep_title to ep_titles.append
+        d = ep['href']
+        new = f"https://dramacool.com.pa{d}"
+        urls.append(new)
+        ep_names.append(ep_title)
+        
+    for epi, reversed_url in zip(reversed(ep_names), reversed(urls)):
+        sou = soup_res(reversed_url)
+        links = sou.find_all('a', href=re.compile(r'.*(download|play.php).*'))
+        for link in links:
+            r += f"{epi}\nhttps:{link['href']}\n"
+            await editMessage(reply, r)
+            if len(r) > 4000:
+                sent = await sendMessage(reply, r)
+                r = ""
+
+async def kissasian(url, message):
+    reply = await sendMessage(message, "<code> Getting Links</code>")
+    soup = soup_res(url)
     urls = []
     ep_title = []
     result = ""
-    for ep in ep_links:        
-        if re.match(r'.*kissasian.*', link):
-            new = f"https://kissasian.cz{ep['href']}"
-            ep_name = ep['title']     
-            
-        elif re.match(r'.*dramacool.*', link):
-            new = f"https://dramacool.com.pa{ep['href']}"
-            ep_title = soup.find('h3', class_='title').text
-        
+    ep_links = soup.find_all('a', href=re.compile(r'.*episode.*'))
+    for ep in ep_links:
+        new = f"https://kissasian.cz{ep['href']}"
+        ep_name = ep['title']
         ep_title.append(ep_name)
         urls.append(new)
-        
+
     for epi, reversed_url in zip(reversed(ep_title), reversed(urls)):
         soup = soup_res(reversed_url)
         links = soup.find_all('option', value=re.compile(r'.*play.php.*'))
@@ -82,7 +109,7 @@ async def kdrama(link, message):
             if len(result) > 4000:
                 sent = await sendMessage(reply, result)
                 result = ""
-                
+            
 async def kayoanime(link, message):
     reply = await sendMessage(message, "Getting Links........")
     soup = soup_res(link)
@@ -123,7 +150,7 @@ async def animeremux(link, message):
         t = requests.get(result, allow_redirects=allow_redirect)
         r += f"<a href='{t.url}'>{txt}</a>\n\n"
         await editMessage(reply, r)
-        if len(result) > 4000:
+        if len(r) > 4000:
             sent = await sendMessage(reply, r)
             r = ""
             await deleteMessage(reply)
