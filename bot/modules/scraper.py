@@ -80,7 +80,7 @@ async def dramacool(url, message):
         sou = soup_res(reversed_url)
         links = sou.find_all('a', href=re.compile(r'.*(download|play.php).*'))
         for link in links:
-            r += f"<b>{epi}</b>\n<a href='https:{link['href']}'> Click Here To Download </a>\n\n"
+            r += f"<b><code>{epi}</code></b>\n<a href='https:{link['href']}'> Click Here To Download </a>\n\n"
             await editMessage(reply, r)
             if len(r) > 4000:
                 sent = await sendMessage(reply, r)
@@ -104,7 +104,7 @@ async def kissasian(url, message):
         links = soup.find_all('option', value=re.compile(r'.*play.php.*'))
         for r in links:
             t = r['value'].replace("play.php", "download")
-            result += f"<code>{epi}</code>\n <a href='https:{t}'> Click Here To Download </a>\n"
+            result += f"<b><code>{epi}</code></b>\n <a href='https:{t}'> Click Here To Download </a>\n"
             await editMessage(reply, result)
             if len(result) > 4000:
                 sent = await sendMessage(reply, result)
