@@ -25,27 +25,16 @@ async def bypass(_, message):
         await kayoanime(link, message)
     elif "linkbuzz.click" in link:
         await linkbuzz(link, message)
-    elif "www9.gogoanimes.fi" in link:
-        await gogoanimes(link, message)
     elif "animeflix.website" in link:
         await animeflix(link, message)
     elif "animeremux.xyz" in link:
         await animeremux(link, message)
     elif "atishmkv.pro" in link:
         await atishmkv(link, message)
+    elif "kissasian.cz" in link:
+        await kissasian(link, message)    
     else:       
         return
-
-def last_episode(url):
-    soup = soup_res(url)
-    return soup.find('a', class_='active')['ep_end']
-
-def generate_episode_urls(base_url, format, num_episodes):
-    episode_urls = []
-    for episode in range(1, num_episodes + 1):
-        episode_url = f"{format}{episode}"
-        episode_urls.append(episode_url)
-    return episode_urls
 
 def get_redirected_url(url):
     response = requests.head(url, allow_redirects=True)
@@ -56,18 +45,6 @@ def soup_res(link):
     response = requests.get(link, headers=headers)
     return BeautifulSoup(response.content, 'html.parser')
 
-def get_links(episode_url):
-    soup = soup_res(episode_url)
-    links = soup.find_all('a', {'data-video': re.compile(r'https://dood.*\/.*')})
-    title_tag = soup.find('title')
-    if title_tag:
-        title_text = title_tag.get_text()
-        text_part = title_text.replace("Watch ", "").replace(" at Gogoanime", "")
-    for c in links:
-        url_link = c['data-video']
-        r = url_link.replace("/e/", "/d/")
-        return f"{text_part}\nWatch Online:- <a href='{url_link}'>1080P Dood-HD</a>  <a href='{r}'>Download Link</a>\n\n"
-
 def final(new_url,t):
     soup = soup_res(new_url)
     link_list = soup.find_all('a', href=re.compile(r"https://(.*drive.*|.*yandex.*).*.*\/"))
@@ -75,6 +52,28 @@ def final(new_url,t):
         drive = k['href']
         title = " ".join(t.split('/')[0].split('-'))
         return f"{title}\n <a href='{drive}'>Download Link</a>\n"
+
+async def kissasian(link, message):
+    reply = await sendMessage(message, "<code>Getting Links</code>")
+    soup = soup_res(link)
+    ep_links = soup.find_all('a', href=re.compile(r'.*episode.*'))
+    urls = []
+    for ep in ep_links:
+        new = f"https://kissasian.cz{ep['href']}"
+        urls.append(new)
+
+    for reversed_url in reversed(urls):
+        soup = soup_res(reversed_url)
+        links = soup.find_all('option', value=re.compile(r'.*play.php.*'))
+        result = ""
+        for r in links:
+            t = r['value'].replace("play.php", "download")
+            result += f"https:{t}\n\n"
+            await editMessage(reply, result)
+            if len(result) > 4000:
+                sent = await sendMessage(reply, result)
+                result = ""
+                await deleteMessage(reply)
 
 async def kayoanime(link, message):
     reply = await sendMessage(message, "Getting Links........")
@@ -101,22 +100,6 @@ async def linkbuzz(link, message):
             await sendMessage(reply, result)
             await deleteMessage(reply)
         
-async def gogoanimes(link, message):
-    reply = await sendMessage(message, "Getting Links from Gogoanimes")
-    new_url = link.split("/")[4]
-    m_url = link.split("/")[2]
-    each_url = f"https://{m_url}/{new_url}-episode-"
-    num_episodes = int(last_episode(link))
-    episode_urls = generate_episode_urls(link, each_url, num_episodes)
-    result = ""
-    for episode_url in episode_urls:
-        result += get_links(episode_url)
-        await editMessage(reply, result)
-        if len(result) > 4000:
-            sent = await sendMessage(reply, result)
-            result = ""
-            await deleteMessage(reply)
-
 async def animeremux(link, message):
     reply = await sendMessage(message, "Getting Links........")
     soup = soup_res(link)
