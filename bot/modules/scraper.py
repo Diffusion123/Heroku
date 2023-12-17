@@ -51,7 +51,7 @@ def final(new_url,t):
         return f"{title}\n <a href='{drive}'>Download Link</a>\n"
 
 async def search_kdrama(_, message):
-    s = quote(message)
+    s = quote(message.encode('utf-8'))
     domain = "https://kissasian.cz"
     search = f"https://kissasian.cz/search.html?keyword={s}"
     soup = soup_res(search)
