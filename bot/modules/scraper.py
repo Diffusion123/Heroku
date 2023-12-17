@@ -4,7 +4,7 @@ import urllib.parse
 import requests
 from asyncio import sleep
 import re 
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote, urlparse, quote
 from bs4 import BeautifulSoup
 from pyrogram.handlers import MessageHandler
 from pyrogram.filters import command
@@ -33,9 +33,9 @@ async def bypass(_, message):
         await atishmkv(link, message)
     elif re.search(r'.*(kissasian|dramacool).*', link):
         await kdrama(link, message)    
-    else:       
-        return
-
+    else:
+        await search_kdrama(link, message)
+        
 def get_redirected_url(url):
     response = requests.head(url, allow_redirects=True)
     return response.url
@@ -52,6 +52,16 @@ def final(new_url,t):
         drive = k['href']
         title = " ".join(t.split('/')[0].split('-'))
         return f"{title}\n <a href='{drive}'>Download Link</a>\n"
+
+async def search_kdrama(link, message):
+    s = quote(link)
+    domain = "https://kissasian.cz"
+    search = f"https://kissasian.cz/search.html?keyword={s}"
+    soup = soup_res(search)
+    list_kdrama = soup.find_all('a', href=re.compile(r'.*info.*'))
+    for kdrama in list_kdrama:
+    selected_kdrama = f"{domain}{kdrama['href']}"
+    await kissasian(selected_kdrama, message)
 
 async def kdrama(link, message):
     if re.match(r'.*kissasian.*', link):
