@@ -50,8 +50,8 @@ def final(new_url,t):
         title = " ".join(t.split('/')[0].split('-'))
         return f"{title}\n <a href='{drive}'>Download Link</a>\n"
 
-async def search_kdrama(link, message):
-    s = quote(link)
+async def search_kdrama(_, message):
+    s = quote(message)
     domain = "https://kissasian.cz"
     search = f"https://kissasian.cz/search.html?keyword={s}"
     soup = soup_res(search)
