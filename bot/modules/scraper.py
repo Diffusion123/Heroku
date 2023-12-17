@@ -31,8 +31,8 @@ async def bypass(_, message):
         await animeremux(link, message)
     elif "atishmkv.pro" in link:
         await atishmkv(link, message)
-    elif "kissasian.cz" in link:
-        await kissasian(link, message)    
+    elif re.search(r'.*(kissasian|dramacool).*', link):
+        await kdrama(link, message)    
     else:       
         return
 
@@ -53,7 +53,7 @@ def final(new_url,t):
         title = " ".join(t.split('/')[0].split('-'))
         return f"{title}\n <a href='{drive}'>Download Link</a>\n"
 
-async def kissasian(link, message):
+async def kdrama(link, message):
     reply = await sendMessage(message, "<code>Getting Links</code>")
     soup = soup_res(link)
     ep_links = soup.find_all('a', href=re.compile(r'.*episode.*'))
@@ -63,7 +63,11 @@ async def kissasian(link, message):
     for ep in ep_links:
         ep_name = ep['title']
         ep_title.append(ep_name)
-        new = f"https://kissasian.cz{ep['href']}"
+        if re.match(r'.*kissasain.*', link):
+            new = f"https://kissasian.cz{ep['href']}"
+        else:
+            new = f"https://dramacool.com.pa{ep['href']}"
+        
         urls.append(new)
         
     for epi, reversed_url in zip(reversed(ep_title), reversed(urls)):
