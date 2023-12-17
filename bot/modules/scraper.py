@@ -58,17 +58,23 @@ async def kissasian(link, message):
     soup = soup_res(link)
     ep_links = soup.find_all('a', href=re.compile(r'.*episode.*'))
     urls = []
+    ep_title = []
     result = ""
     for ep in ep_links:
+        ep_name = ep['title']
+        ep_title.append(ep_name)
         new = f"https://kissasian.cz{ep['href']}"
         urls.append(new)
-
+        
+    for epi in reversed(ep_title):
+        result += f"<code>{epi}</code>\n"
+        
     for reversed_url in reversed(urls):
         soup = soup_res(reversed_url)
         links = soup.find_all('option', value=re.compile(r'.*play.php.*'))
         for r in links:
             t = r['value'].replace("play.php", "download")
-            result += f"https:{t}\n\n"
+            result += f"<a href='https:{t}'> Click Here To Download </a>\n"
             await editMessage(reply, result)
             if len(result) > 4000:
                 sent = await sendMessage(reply, result)
