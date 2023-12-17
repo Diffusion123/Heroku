@@ -80,7 +80,7 @@ async def dramacool(url, message):
         sou = soup_res(reversed_url)
         links = sou.find_all('a', href=re.compile(r'.*(download|play.php).*'))
         for link in links:
-            r += f"{epi}\nhttps:{link['href']}\n"
+            r += f"<b>{epi}</b>\n<a href='https:{link['href']}'> Click Here To Download </a>\n\n"
             await editMessage(reply, r)
             if len(r) > 4000:
                 sent = await sendMessage(reply, r)
