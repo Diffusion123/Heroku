@@ -51,7 +51,7 @@ def final(new_url,t):
         return f"{title}\n <a href='{drive}'>Download Link</a>\n"
 
 async def search_kdrama(_, message):
-    s = urllib.parse.quote(message)
+    s = urllib.parse.quote(message.text)
     domain = "https://kissasian.cz"
     search = f"https://kissasian.cz/search.html?keyword={s}"
     soup = soup_res(search)
