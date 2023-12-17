@@ -18,9 +18,6 @@ from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 async def bypass(_, message):
     args = message.text.split()
     link = args[1] if len(args) > 1 else ''
-    domain = urlparse(link).hostname
-    if not domain:
-        raise DirectDownloadLinkException("ERROR: Invalid URL")
     if "kayoanime.com" in link:
         await kayoanime(link, message)
     elif "linkbuzz.click" in link:
