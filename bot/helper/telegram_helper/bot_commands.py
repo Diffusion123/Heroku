@@ -61,5 +61,6 @@ class _BotCommands:
         self.ScraperCommand = f'scraper{CMD_SUFFIX}'
         self.ByPassCommand = f'bypass{CMD_SUFFIX}'
         self.QueryCommand = f'query{CMD_SUFFIX}'
+        self.KdramaCommand = f'kdrama{CMD_SUFFIX}'
 
 BotCommands = _BotCommands()
