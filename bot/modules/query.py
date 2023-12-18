@@ -27,10 +27,11 @@ def soup_res(url):
     return BeautifulSoup(response.content, 'html.parser')
 
 async def anidao_search(message):
-    blacklisted_words = ["Renai Flops", "Uncensored", "Princess Lover! ","Futoku no Guild","Ishuzoku Reviewers","Kandagawa Jet Girls","Oniichan wa Oshimai","Dokyuu", "Hentai"," HxEros"]
+    blacklisted_words = ["Renai Flops", "Uncensored", "Princess Lover!", "Futoku no Guild", "Ishuzoku Reviewers", "Kandagawa Jet Girls", "Oniichan wa Oshimai", "Dokyuu", "Hentai", "HxEros"]
     message_lower = message.text.lower().strip()
     blacklisted_words_lower = [word.lower().strip() for word in blacklisted_words]
-    for word in blacklisted_words:
+
+    for word in blacklisted_words_lower:
         if word in message.text:
             await sendMessage(message, "Are You Stupid?, Learn Discipline To Search Content")
             break
