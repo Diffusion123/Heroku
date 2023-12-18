@@ -66,4 +66,4 @@ async def animedao_files(link, message):
         if len(result) > 4000:
             sent = await sendMessage(reply, result)
 
-bot.add_handler(MessageHandler(query_link, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
+bot.add_handler(MessageHandler(query, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
