@@ -38,8 +38,9 @@ async def animedao(link, message):
         mid = f"https://{part}"
         anime = mid + l_sub
         urls.append(anime)
-        for final in reversed(urls):
-            await animedao_files(final, message)
+        
+    for final in reversed(urls):
+        await animedao_files(final, message)
 
 async def animedao_files(link, message):
     reply = await sendMessage(message, "Searching for the results")
