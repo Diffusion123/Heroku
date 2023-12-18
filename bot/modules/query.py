@@ -32,7 +32,7 @@ async def anidao_search(message):
     blacklisted_words_lower = [word.lower().strip() for word in blacklisted_words]
 
     for word in blacklisted_words_lower:
-        if word in message.text:
+        if word in message_lower:
             await sendMessage(message, "Are You Stupid?, Learn Discipline To Search Content")
             break
     else:
