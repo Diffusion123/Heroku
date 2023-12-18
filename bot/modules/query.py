@@ -27,14 +27,22 @@ def soup_res(url):
     return BeautifulSoup(response.content, 'html.parser')
 
 async def anidao_search(message):
-    s = quote(message.text.split(' ', 1)[1].rsplit(' ', 1)[0])
-    search_url = f"https://animedao.bz/search.html?keyword={s}"
-    soup = soup_res(search_url)
-    links = soup.find_all('a', href=re.compile(r'.*anime/.*'))
-    for link in links:
-        t = link['href']
-        new_url = f"https://animedao.bz{t}"
-        await animedao(new_url, message)
+    blacklisted_words = ["Renai Flops", "Uncensored", "Princess Lover! ","Futoku no Guild","Ishuzoku Reviewers","Kandagawa Jet Girls","Oniichan wa Oshimai","Dokyuu", "Hentai"," HxEros"]
+    message_lower = message.text.lower().strip()
+    blacklisted_words_lower = [word.lower().strip() for word in blacklisted_words]
+    for word in blacklisted_words:
+        if word in message.text:
+            await sendMessage(message, "Are You Stupid?, Learn Discipline To Search Content")
+            break
+    else:
+        s = quote(message.text.split(' ', 1)[1].rsplit(' ', 1)[0])
+        search_url = f"https://animedao.bz/search.html?keyword={s}"
+        soup = soup_res(search_url)
+        links = soup.find_all('a', href=re.compile(r'.*anime/.*'))
+        for link in links:
+            t = link['href']
+            new_url = f"https://animedao.bz{t}"
+            await animedao(new_url, message)
 
 async def animedao(link, message):
     soup = soup_res(link)
