@@ -22,26 +22,24 @@ async def query_link(_, message):
     s = quote((message.text).split(' ', 1)[1])
     search_url = f"https://animedao.bz/search.html?keyword={s}"
     soup = soup_res(search_url)
-    if soup:
-        links = soup.find_all('a', href=re.compile(r'.*anime/.*'))
-        for link in links:
-            t = link['href']
-            new_url = f"https://animedao.bz{t}"
-            await animedao(new_url, message)
+    links = soup.find_all('a', href=re.compile(r'.*anime/.*'))
+    for link in links:
+        t = link['href']
+        new_url = f"https://animedao.bz{t}"
+        await animedao(new_url, message)
 
 async def animedao(link, message):
-    if re.search(r'.*episode.*', link):
-        await animedao_files(link, reply)
-    else:
-        soup = soup_res(link)
-        if soup:
-            links = soup.find_all('a', {'class': "episode_well_link"}, href=re.compile(r'.*watch-online.*'))
-            for sub in links:
-                l_sub = sub['href']
-                part = link.split('/')[2]
-                mid = f"https://{part}"
-                final = mid + l_sub
-                await animedao_files(final, message)
+    soup = soup_res(link)
+    links = soup.find_all('a', {'class': "episode_well_link"}, href=re.compile(r'.*watch-online.*'))
+    urls = []
+    for sub in links:
+        l_sub = sub['href']
+        part = link.split('/')[2]
+        mid = f"https://{part}"
+        anime = mid + l_sub
+        urls.append(anime)
+        for final in reversed(urls):
+            await animedao_files(final, message)
 
 async def animedao_files(link, message):
     reply = await sendMessage(message, "Searching for the results")
