@@ -14,12 +14,16 @@ from bot.helper.telegram_helper.message_utils import editMessage, sendMessage, d
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 from bot.helper.telegram_helper.button_build import ButtonMaker
 
+async def query(_, message):
+    if "-animedao" in message.text:
+        await anidao_search(message)
+
 def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
 
-async def query_link(_, message):
-    s = quote((message.text).split(' ', 1)[1])
+async def anidao_search(message):
+    s = quote(message.split(' ', 1)[1].rsplit(' ', 1)[0])
     search_url = f"https://animedao.bz/search.html?keyword={s}"
     soup = soup_res(search_url)
     links = soup.find_all('a', href=re.compile(r'.*anime/.*'))
