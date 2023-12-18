@@ -23,7 +23,7 @@ def soup_res(url):
     return BeautifulSoup(response.content, 'html.parser')
 
 async def anidao_search(message):
-    s = quote(message.split(' ', 1)[1].rsplit(' ', 1)[0])
+    s = quote(message.text.split(' ', 1)[1].rsplit(' ', 1)[0])
     search_url = f"https://animedao.bz/search.html?keyword={s}"
     soup = soup_res(search_url)
     links = soup.find_all('a', href=re.compile(r'.*anime/.*'))
