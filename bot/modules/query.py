@@ -17,7 +17,11 @@ from bot.helper.telegram_helper.button_build import ButtonMaker
 async def query(_, message):
     if "-animedao" in message.text:
         await anidao_search(message)
-
+    elif "-kdrama" in message.text:
+        await kdrama_search(message)
+    else:
+        await sendMessage(message, "<i>Provide Kdrama / Anime Name </i>")
+             
 def soup_res(url):
     response = requests.get(url)
     return BeautifulSoup(response.content, 'html.parser')
@@ -44,9 +48,9 @@ async def animedao(link, message):
         urls.append(anime)
         
     for final in reversed(urls):
-        await animedao_files(final, message)
+        await animedao_ep_files(final, message)
 
-async def animedao_files(link, message):
+async def animedao_ep_files(link, message):
     reply = await sendMessage(message, "Searching for the results")
     soup = soup_res(link)
     links = soup.find_all('a', {'data-video': re.compile(r'.*(awish|dood|alions).*')})
@@ -65,5 +69,39 @@ async def animedao_files(link, message):
         await editMessage(reply, result)
         if len(result) > 4000:
             sent = await sendMessage(reply, result)
+
+async def kdrama_search(message):
+    s = quote(message.text.split(' ', 1)[1].rsplit(' ', 1)[0])
+    domain = "https://kissasian.cz"
+    search = f"https://kissasian.cz/search.html?keyword={s}"
+    soup = soup_res(search)
+    list_kdrama = soup.find_all('a', href=re.compile(r'.*info.*'))
+    for kdrama in list_kdrama:
+        selected_kdrama = f"{domain}{kdrama['href']}"
+        await kissasian(selected_kdrama, message)
+
+async def kissasian(url, message):
+    reply = await sendMessage(message, "<code> Getting Links</code>")
+    soup = soup_res(url)
+    urls = []
+    ep_title = []
+    result = ""
+    ep_links = soup.find_all('a', href=re.compile(r'.*episode.*'))
+    for ep in ep_links:
+        new = f"https://kissasian.cz{ep['href']}"
+        ep_name = ep['title']
+        ep_title.append(ep_name)
+        urls.append(new)
+
+    for epi, reversed_url in zip(reversed(ep_title), reversed(urls)):
+        soup = soup_res(reversed_url)
+        links = soup.find_all('option', value=re.compile(r'.*play.php.*'))
+        for r in links:
+            t = r['value'].replace("play.php", "download")
+            result += f"<b><code>{epi}</code></b>\n <a href='https:{t}'> Click Here To Download </a>\n"
+            await editMessage(reply, result)
+            if len(result) > 4000:
+                sent = await sendMessage(reply, result)
+                result = ""
 
 bot.add_handler(MessageHandler(query, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
