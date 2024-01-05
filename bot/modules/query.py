@@ -134,7 +134,7 @@ async def pagalhindi(message):
         for s_link in s_links:
             s_result = s_link['href']
             t = s_result.replace("128-", "").replace("120-", "").replace("192-", "").replace("320-", "").split('/')
-            result += f"Name : {t[4]}\n <a href="{s_result}"> Download Link </a>\n"
+            result += f"Name : {t[4]}\n <a href='{s_result}'>Download Link</a>\n"
             await editMessage(reply, result)
             if len(result) > 4000:
                 sent = await sendMessage(reply, result)
