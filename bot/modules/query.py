@@ -19,6 +19,8 @@ async def query(_, message):
         await anidao_search(message)
     elif "-kdrama" in message.text:
         await kdrama_search(message)
+    elif "-hsongs" in message.text:
+        await pagalhindi(message)
     else:
         await sendMessage(message, "<i>Provide Kdrama / Anime Name </i>")
              
@@ -108,6 +110,32 @@ async def kissasian(url, message):
         for r in links:
             t = r['value'].replace("play.php", "download")
             result += f"<b><code>{epi}</code></b>\n <a href='https:{t}'> Click Here To Download </a>\n"
+            await editMessage(reply, result)
+            if len(result) > 4000:
+                sent = await sendMessage(reply, result)
+                result = ""
+
+def pagalhindi(message):
+    reply = await sendMessage(message, "<code> Searching Songs links</code>")
+    s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0])
+    final_part  = s 
+    second_part = final_part.replace(" ","-")
+    first_part = "https://pagalfree.com/album/"
+    search_url = first_part + second_part + ".html"
+    new = search_url.replace(".html","").replace("-"," ").split('/')
+    soup = soup_res(search_url)
+    links = soup.find_all('a', href=re.compile(r'.*music.*'))
+    result = ""
+    
+    for link in links:
+        result = link['href']
+        song = soup_res(result)
+        s_links = song.find_all('a', href=re.compile(r'.*download.*'))
+
+        for s_link in s_links:
+            s_result = s_link['href']
+            t = s_result.replace("128-","").replace("120-","").replace("192-","").replace("320-","").split('/')
+            result += f"Name : {t[4]}\n{s_result}\n"
             await editMessage(reply, result)
             if len(result) > 4000:
                 sent = await sendMessage(reply, result)
