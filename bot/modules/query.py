@@ -115,7 +115,7 @@ async def kissasian(url, message):
                 sent = await sendMessage(reply, result)
                 result = ""
 
-def pagalhindi(message):
+async def pagalhindi(message):
     reply = await sendMessage(message, "<code> Searching Songs links</code>")
     s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0]
     final_part  = s 
