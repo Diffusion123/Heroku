@@ -118,15 +118,14 @@ async def kissasian(url, message):
 async def pagalhindi(message):
     reply = await sendMessage(message, "<code> Searching Songs links</code>")
     s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0]
-    final_part  = s 
-    second_part = final_part.replace(" ","-")
+    final_part = s
+    second_part = final_part.replace(" ", "-")
     first_part = "https://pagalfree.com/album/"
     search_url = first_part + second_part + ".html"
-    new = search_url.replace(".html","").replace("-"," ").split('/')
     soup = soup_res(search_url)
     links = soup.find_all('a', href=re.compile(r'.*music.*'))
     result = ""
-    
+
     for link in links:
         result = link['href']
         song = soup_res(result)
@@ -134,7 +133,7 @@ async def pagalhindi(message):
 
         for s_link in s_links:
             s_result = s_link['href']
-            t = s_result.replace("128-","").replace("120-","").replace("192-","").replace("320-","").split('/')
+            t = s_result.replace("128-", "").replace("120-", "").replace("192-", "").replace("320-", "").split('/')
             result += f"Name : {t[4]}\n{s_result}\n"
             await editMessage(reply, result)
             if len(result) > 4000:
