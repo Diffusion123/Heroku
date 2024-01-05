@@ -117,7 +117,7 @@ async def kissasian(url, message):
 
 def pagalhindi(message):
     reply = await sendMessage(message, "<code> Searching Songs links</code>")
-    s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0])
+    s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0]
     final_part  = s 
     second_part = final_part.replace(" ","-")
     first_part = "https://pagalfree.com/album/"
