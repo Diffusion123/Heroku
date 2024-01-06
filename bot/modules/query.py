@@ -127,22 +127,22 @@ async def pagalhindi(message):
         first_part = "https://pagalfree.com/album/"
         search_url = first_part + second_part + ".html"
         soup = soup_res(search_url)
-        if soup:
-            result += f"Detected: {s} ({year})\n\n"
         links = soup.find_all('a', href=re.compile(r'.*music.*'))
-        for link in links:
-            l_result = link['href']
-            song = soup_res(l_result)
-            s_links = song.find_all('a', href=re.compile(r'.*download.*'))
+        if links:
+            result += f"Detected: {s} ({year})\n\n"
+            for link in links:
+                l_result = link['href']
+                song = soup_res(l_result)
+                s_links = song.find_all('a', href=re.compile(r'.*download.*'))
 
-            for s_link in s_links:
-                s_result = s_link['href']
-                new_link = quote(s_result).replace("%3A",":")
-                t = s_result.replace("128-", "").replace("120-", "").replace("192-", "").replace("320-", "").split('/')
-                result += f"Name: {t[4]}\n <a href='{new_link}'>Download Link</a>\n\n"
-                await editMessage(reply, result)
-                if len(result) > 4000:
-                    sent = await sendMessage(reply, result)
-                    result = ""
+                for s_link in s_links:
+                    s_result = s_link['href']
+                    new_link = quote(s_result).replace("%3A",":")
+                    t = s_result.replace("128-", "").replace("120-", "").replace("192-", "").replace("320-", "").split('/')
+                    result += f"Name: {t[4]}\n <a href='{new_link}'>Download Link</a>\n\n"
+                    await editMessage(reply, result)
+                    if len(result) > 4000:
+                        sent = await sendMessage(reply, result)
+                        result = ""
 
 bot.add_handler(MessageHandler(query, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
