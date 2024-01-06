@@ -112,7 +112,7 @@ async def kissasian(url, message):
             result += f"<b><code>{epi}</code></b>\n <a href='https:{t}'> Click Here To Download </a>\n"
             await editMessage(reply, result)
             if len(result) > 4000:
-                sent = await sendMessage(reply, result)
+                sent = await sendMessage(result)
                 result = ""
 
 async def pagalhindi(message):
@@ -142,7 +142,7 @@ async def pagalhindi(message):
                     result += f"Name: {t[4]}\n <a href='{new_link}'>Download Link</a>\n\n"
                     await editMessage(reply, result)
                     if len(result) > 4000:
-                        sent = await sendMessage(reply, result)
+                        sent = await sendMessage(result)
                         result = ""
 
 bot.add_handler(MessageHandler(query, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
