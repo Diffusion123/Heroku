@@ -118,6 +118,7 @@ async def kissasian(url, message):
 async def pagalhindi(message):
     reply = await sendMessage(message, "<code> Searching Song links</code>")
     s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0]
+    result = ""
     for i in range(1990, 2025):
         year = i
         final_part = s + " " + str(year)
@@ -126,9 +127,9 @@ async def pagalhindi(message):
         first_part = "https://pagalfree.com/album/"
         search_url = first_part + second_part + ".html"
         soup = soup_res(search_url)
+        if soup:
+            result += f"Detected: {s} ({year})\n\n"
         links = soup.find_all('a', href=re.compile(r'.*music.*'))
-        result = ""
-
         for link in links:
             l_result = link['href']
             song = soup_res(l_result)
@@ -136,8 +137,6 @@ async def pagalhindi(message):
 
             for s_link in s_links:
                 s_result = s_link['href']
-                if s_result:
-                    result += f"Detected: {s} ({year})\n\n"
                 new_link = quote(s_result).replace("%3A",":")
                 t = s_result.replace("128-", "").replace("120-", "").replace("192-", "").replace("320-", "").split('/')
                 result += f"Name: {t[4]}\n <a href='{new_link}'>Download Link</a>\n\n"
