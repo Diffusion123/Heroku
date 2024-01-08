@@ -20,7 +20,9 @@ async def query(_, message):
     elif "-kdrama" in message.text:
         await kdrama_search(message)
     elif "-hsongs" in message.text:
-        await pagalhindi(message)
+        await pagalfree(message)
+    elif "-tsongs" in message.text:
+        await masstamilian(message)
     else:
         await sendMessage(message, "<i>Provide Kdrama / Anime Name </i>")
              
@@ -115,7 +117,7 @@ async def kissasian(url, message):
                 sent = await sendMessage(reply, result)
                 result = ""
 
-async def pagalhindi(message):
+async def pagalfree(message):
     reply = await sendMessage(message, "<code> Searching Song links</code>")
     s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0]
     result = ""
@@ -144,5 +146,28 @@ async def pagalhindi(message):
                     if len(result) > 4000:
                         sent = await sendMessage(reply, result)
                         result = ""
+
+async def masstamilian(message):
+    reply = await sendMessage(message, "<code> Searching Song links</code>")
+    s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0]
+    url = s
+    soup = soup_res(url)
+    links = soup.find_all('a', href=re.compile(r'.*(d128|d320|d192|zip128|zip320).*'))
+    result = ""
+    for link in links:
+        first = link['href']
+        d_link = f"https://masstamilan.dev{first}"
+        if "d128" in d_link:
+            result += f"128Kbps : {d_link}\n"
+        if "d320" in d_link:
+            result += f"320Kbps : {d_link}\n"
+        if "zip128" in first:
+            result += f"Zip 128Kbps : {d_link}\n"
+        if "zip320" in first:
+            result += f"Zip 320Kbps : {d_link}\n"
+        await editMessage(reply, result)
+        if len(result) > 4000:
+            sent = await sendMessage(reply, result)
+            result = ""
 
 bot.add_handler(MessageHandler(query, filters=command(BotCommands.QueryCommand) & CustomFilters.sudo))
