@@ -85,8 +85,8 @@ async def animedao_ep_files(link, message):
 
 async def kdrama_search(message):
     s = quote(message.text.split(' ', 1)[1].rsplit(' ', 1)[0])
-    domain = "https://kissasian.cz"
-    search = f"https://kissasian.cz/search.html?keyword={s}"
+    DOMAIN = "https://kissasian.cz"
+    search = f"{DOMAIN}/search.html?keyword={s}"
     soup = soup_res(search)
     list_kdrama = soup.find_all('a', href=re.compile(r'.*info.*'))
     for kdrama in list_kdrama:
@@ -100,8 +100,9 @@ async def kissasian(url, message):
     ep_title = []
     result = ""
     ep_links = soup.find_all('a', href=re.compile(r'.*episode.*'))
+    DOMAIN = "https://kissasian.cz"
     for ep in ep_links:
-        new = f"https://kissasian.cz{ep['href']}"
+        new = f"{DOMAIN}{ep['href']}"
         ep_name = ep['title']
         ep_title.append(ep_name)
         urls.append(new)
@@ -151,6 +152,7 @@ async def masstamilian(message):
     reply = await sendMessage(message, "<code> Searching Song links</code>")
     s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0]
     url = s
+    DOMAIN = "https://masstamilan.dev" 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
         'Accept-Language': 'en-US'
@@ -161,7 +163,7 @@ async def masstamilian(message):
     result = ""
     for link in links:
         first = link['href']
-        d_link = f"https://masstamilan.dev{first}"
+        d_link = f"{DOMAIN}{first}"
         txt = link.get('title')
         if re.match(r'.*(d128|d320|d192).*', d_link):
             n_txt = txt.replace("Download ","")
