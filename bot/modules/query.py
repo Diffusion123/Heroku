@@ -151,25 +151,14 @@ async def masstamilian(message):
     reply = await sendMessage(message, "<code> Searching Song links</code>")
     s = message.text.split(' ', 1)[1].rsplit(' ', 1)[0]
     url = s
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-        'Accept-Language': 'en-US'
-    }
-    res = requests.get(url, headers=headers)
-    soup = BeautifulSoup(res.text,'html.parser')
+    soup = soup_res(url)
     links = soup.find_all('a', href=re.compile(r'.*(d128|d320|d192|zip128|zip320).*'))
     result = ""
     for link in links:
         first = link['href']
+        text = link.get_text(strip=True)
         d_link = f"https://masstamilan.dev{first}"
-        if "d128" in d_link:
-            result += f"128Kbps : {d_link}\n"
-        if "d320" in d_link:
-            result += f"320Kbps : {d_link}\n"
-        if "zip128" in first:
-            result += f"Zip 128Kbps : {d_link}\n"
-        if "zip320" in first:
-            result += f"Zip 320Kbps : {d_link}\n"
+        result += f"<a href='{d_link}'>{text}</a>\n"
         await editMessage(reply, result)
         if len(result) > 4000:
             sent = await sendMessage(reply, result)
