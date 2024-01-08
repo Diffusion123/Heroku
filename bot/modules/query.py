@@ -169,7 +169,7 @@ async def masstamilian(message):
             n_txt = "Zipped"    
         text = link.get_text(strip=True)
         c_text = text.replace("128kbps ","").replace("320kbps ","").replace("ZIP ","")
-        result += f"<a href='{d_link}'>{n_txt}</a> - {c_text}\n"
+        result += f"Name : <a href='{d_link}'>{n_txt}</a> - {c_text}\n"
         await editMessage(reply, result)
         if len(result) > 4000:
             sent = await sendMessage(reply, result)
