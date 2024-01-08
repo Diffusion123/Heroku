@@ -161,9 +161,14 @@ async def masstamilian(message):
     result = ""
     for link in links:
         first = link['href']
-        text = link.get_text(strip=True)
         d_link = f"https://masstamilan.dev{first}"
-        result += f"<a href='{d_link}'>{text}</a>\n"
+        txt = link.get('title')
+        if re.match(r'.*(d128|d320|d192).*', d_link):
+            n_txt = txt.replace("Download ","")
+        else:
+            n_txt = txt
+        text = link.get_text(strip=True)
+        result += f"<a href='{d_link}'>{n_txt}</a> - {text}\n"
         await editMessage(reply, result)
         if len(result) > 4000:
             sent = await sendMessage(reply, result)
