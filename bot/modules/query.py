@@ -156,7 +156,7 @@ async def masstamilian(message):
         'Accept-Language': 'en-US'
     }
     res = requests.get(url)
-    soup = Beautiful(res.text,'html.parser')
+    soup = BeautifulSoup(res.text,'html.parser')
     links = soup.find_all('a', href=re.compile(r'.*(d128|d320|d192|zip128|zip320).*'))
     result = ""
     for link in links:
