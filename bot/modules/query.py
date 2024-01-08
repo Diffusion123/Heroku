@@ -155,7 +155,7 @@ async def masstamilian(message):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
         'Accept-Language': 'en-US'
     }
-    res = requests.get(url)
+    res = requests.get(url, headers=headers)
     soup = BeautifulSoup(res.text,'html.parser')
     links = soup.find_all('a', href=re.compile(r'.*(d128|d320|d192|zip128|zip320).*'))
     result = ""
