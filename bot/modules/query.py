@@ -166,7 +166,7 @@ async def masstamilian(message):
         if re.match(r'.*(d128|d320|d192).*', d_link):
             n_txt = txt.replace("Download ","")
         else:
-            n_txt = txt
+            n_txt = "Zipped"    
         text = link.get_text(strip=True)
         result += f"<a href='{d_link}'>{n_txt}</a> - {text}\n"
         await editMessage(reply, result)
